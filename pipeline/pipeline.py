@@ -5,8 +5,8 @@ from resources import fetch_job_ads
 
 def create_pipeline():
     pipeline = dlt.pipeline(
-        name="HR_Data_Pipeline",
-        destination= dlt.destinations.duckdb("../hr_project/hr_job_ads.duckdb"),
+        pipeline_name="HR_Data_Pipeline",
+        destination= dlt.destinations.duckdb("hr_project/hr_job_ads.duckdb"),
         dataset_name="staging",
     )
     return pipeline
@@ -15,17 +15,13 @@ def run_pipeline():
 
     pipeline = create_pipeline()
     offset = 0  
-    while offset < 500:
-        data = fetch_job_ads(100,offset=offset)
-        
-        hits = data.get("hits",[])
-        if hits:
-            pipeline.run(fetch_job_ads(100,offset=offset))
+    limit = 100
+    while offset < 1900:
+       
+        pipeline.run(fetch_job_ads(limit,offset))
 
-        
-        
-        offset += 100
-        print("awd")
+        offset += limit
+        print("Fetched 100 rows")
         
 
 
