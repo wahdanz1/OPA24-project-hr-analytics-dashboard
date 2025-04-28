@@ -1,14 +1,16 @@
 import dlt
 import requests
 import json
-# from config import base_url, db_path, working_directory
+
+from config import base_url, db_path, working_directory
+
 
 # --- Temporary variables for url and offset ---
-base_url = "https://jobsearch.api.jobtechdev.se/search"
+base_url = "https://jobsearch.api.jobtechdev.se"
 offset = 100
 
 # --- Function for yield job ads ---
-@dlt.resource(write_disposition="append") # Appends the new ads (instead of overwrites)
+@dlt.resource(write_disposition="replace") # Appends the new ads (instead of overwrites)
 def jobsearch_resource(params):
     url_for_search = f"{base_url}/search"
     limit = params.get("limit", 100)
@@ -32,7 +34,7 @@ def jobsearch_resource(params):
             yield ad
 
         # If fewer ads than the limit are returned (less than a full page), break the loop
-        if len(hits) < limit:
+        if len(hits) < limit or offset > 1900:
             break
 
         # Update the offset to fetch the next page of results
@@ -49,4 +51,4 @@ def _get_ads(url_for_search, params):
 
 # For testing purposes
 if __name__ == "__main__":
-    print("Fetching job ads...")
+    print(db_path)
