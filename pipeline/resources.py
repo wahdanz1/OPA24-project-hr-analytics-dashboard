@@ -37,10 +37,13 @@ def jobsearch_resource(params):
         # Yield each job ad
         for ad in hits:
             yield ad
-
+        
         # If fewer ads than the limit are returned (less than a full page), break the loop
         if len(hits) < limit or offset > 1900:
+            if offset > 1900:
+                    print(f"WARNING --- Reached 2000 hits may contain hidden data")
             break
+        
 
         # Update the offset to fetch the next page of results
         offset += limit
