@@ -15,7 +15,7 @@ from config import base_url
 
 # ---------- RESOURCE FUNCTIONS ----------
 # --- Function for yield job ads ---
-@dlt.resource(write_disposition="replace")
+@dlt.resource(write_disposition="append")
 def jobsearch_resource(params):
     url_for_search = f"{base_url}/search"
     limit = params.get("limit", 100)
