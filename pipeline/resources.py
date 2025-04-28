@@ -2,15 +2,20 @@ import dlt
 import requests
 import json
 
-from config import base_url, db_path, working_directory
+# To be able to import config.py and access its variables
+import sys
+from pathlib import Path
+
+# Add the parent directory to sys.path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+# Import variables from config.py
+from config import base_url
 
 
-# --- Temporary variables for url and offset ---
-base_url = "https://jobsearch.api.jobtechdev.se"
-offset = 100
-
+# ---------- RESOURCE FUNCTIONS ----------
 # --- Function for yield job ads ---
-@dlt.resource(write_disposition="replace") # Appends the new ads (instead of overwrites)
+@dlt.resource(write_disposition="replace")
 def jobsearch_resource(params):
     url_for_search = f"{base_url}/search"
     limit = params.get("limit", 100)
@@ -49,6 +54,6 @@ def _get_ads(url_for_search, params):
 
 
 
-# For testing purposes
+# --- For testing purposes ---
 if __name__ == "__main__":
-    print(db_path)
+    print(base_url)

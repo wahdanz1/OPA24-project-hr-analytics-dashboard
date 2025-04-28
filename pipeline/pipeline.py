@@ -1,47 +1,49 @@
 import dlt
 from resources import jobsearch_resource
 
+# To be able to import config.py and access its variables
+import sys
+from pathlib import Path
+
+# Add the parent directory to sys.path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+# Import variables from config.py
+from config import db_path, table_name, occupation_field_list
 
 
-
+# ---------- PIPELINE FUNCTIONS ----------
 # Creates a pipeline 
 def create_pipeline():
     pipeline = dlt.pipeline(
-        pipeline_name="HR_Data_Pipeline",
-        destination= dlt.destinations.duckdb("hr_project/hr_job_ads.duckdb"),
-        dataset_name="staging",
+        pipeline_name = "hr_data_pipeline",
+        destination = dlt.destinations.duckdb(str(db_path)),
+        dataset_name ="staging",
     )
     return pipeline
-# Creates And Runs a pipeline
-def run_pipeline():
 
+# Creates And Runs a pipeline
+def run_pipeline(table_name):
     pipeline = create_pipeline()
 
-
-    occupation_fields = [
-        "X82t_awd_Qyc",
-        "NYW6_mP6_vwf",
-        "RPTn_bxG_ExZ"
-    ]
-
-    for field in occupation_fields:
+    # Loop through each occupation field in the list
+    for field in occupation_field_list:
         params = {
             "occupation-field": field,
-            "limit":100,
-            "offset":0,
+            "limit": 100,
+            "offset": 0,
         }
+        print(params)
+
         pipeline.run(
-                    jobsearch_resource(params),
-                    table_name="job_ads"
-                    )
+            jobsearch_resource(params=params),
+            table_name=table_name
+        )
     
-    
-    print("Completed Fetch")
-    
-        
+    print("Completed running the pipeline!")
 
 
-
+# --- For testing purposes ---
 if __name__ == "__main__":
-    print("AWdaws")
-    run_pipeline()
+    print("Running pipeline...")
+    run_pipeline(table_name)
