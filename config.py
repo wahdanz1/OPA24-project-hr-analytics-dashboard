@@ -1,8 +1,9 @@
-import os 
+from dotenv import load_dotenv
 from pathlib import Path
 
+load_dotenv()
 
-base_url = "https://jobsearch.api.jobtechdev.se/search"
+base_url = "https://jobsearch.api.jobtechdev.se"
 
 default_limit = 100
 

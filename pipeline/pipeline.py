@@ -1,5 +1,5 @@
 import dlt
-from resources import fetch_job_ads
+from resources import jobsearch_resource
 
 
 
@@ -15,27 +15,29 @@ def create_pipeline():
 def run_pipeline():
 
     pipeline = create_pipeline()
-    pipeline.run(fetch_job_ads(
-                    generate_parameters()
-    ))
-    print("Fetched 100 rows")
-    
-        
-#Returns parameters for Occupational fields required Limit and offset input
-def generate_parameters(limit = 100,offset = 0):
-    # Codes related to Occupational Fields for jobtech API
+
+
     occupation_fields = [
         "X82t_awd_Qyc",
         "NYW6_mP6_vwf",
         "RPTn_bxG_ExZ"
     ]
-    params = {
 
-        "ocupation-field": occupation_fields,
-        "limit":limit,
-        "offset":offset
-    }
-    return params
+    for field in occupation_fields:
+        params = {
+            "occupation-field": field,
+            "limit":100,
+            "offset":0,
+        }
+        pipeline.run(
+                    jobsearch_resource(params),
+                    table_name="job_ads"
+                    )
+    
+    
+    print("Completed Fetch")
+    
+        
 
 
 
