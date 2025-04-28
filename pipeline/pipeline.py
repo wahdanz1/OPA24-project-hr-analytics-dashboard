@@ -33,7 +33,6 @@ def run_pipeline(table_name):
             "limit": 100,
             "offset": 0,
         }
-        print(params)
 
         pipeline.run(
             jobsearch_resource(params=params),
