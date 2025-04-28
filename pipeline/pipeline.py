@@ -3,6 +3,7 @@ from resources import jobsearch_resource
 
 
 
+
 # Creates a pipeline 
 def create_pipeline():
     pipeline = dlt.pipeline(
