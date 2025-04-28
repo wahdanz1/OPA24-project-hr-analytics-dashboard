@@ -1,39 +1,52 @@
 import dlt
 import requests
 import json
+# from config import base_url, db_path, working_directory
 
-# X82t_awd_Qyc	Administration, ekonomi, juridik
-# RPTn_bxG_ExZ	Försäljning, inköp, marknadsföring
-# NYW6_mP6_vwf	Hälso- och sjukvård
-occupation_field_list = ["X82t_awd_Qyc", "RPTn_bxG_ExZ", "NYW6_mP6_vwf"]
+# --- Temporary variables for url and offset ---
+base_url = "https://jobsearch.api.jobtechdev.se/search"
+offset = 100
 
-@dlt.resource(write_disposition="append")
-def fetch_job_ads(ads_to_fetch=10, offset=0):
-    # Endpoint url & parameters
-    url = "https://jobsearch.api.jobtechdev.se/search"
-    params = {
-        "q": "occupation-field=" + ",".join(occupation_field_list),
-        "size": ads_to_fetch,  # Number of job ads to fetch
-        "offset": offset  # Offset for pagination
-        }
-    
-    # Make the GET request to the API
-    response = requests.get(url, params=params)
+# --- Function for yield job ads ---
+@dlt.resource(write_disposition="append") # Appends the new ads (instead of overwrites)
+def jobsearch_resource(params):
+    url_for_search = f"{base_url}/search"
+    limit = params.get("limit", 100)
+    offset = params.get("offset", 0)
 
-    # Check if the request was successful (status code 200)
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
-        yield data
-    else:
-        # Handle the error case
-        print(f"Error status code: {response.status_code}")
-        yield []
+    while True:
+        # Build the page's parameters, including offset and limit
+        page_params = dict(params, offset=offset) # Add the current offset to the params
+
+        # Get the data using the helper function
+        data = _get_ads(url_for_search, page_params)
+
+        hits = data.get("hits", []) # Extract the list of job ads
+
+        # If there are no more hits, stop the loop (end of pagination)
+        if not hits:
+            break
+
+        # Yield each job ad
+        for ad in hits:
+            yield ad
+
+        # If fewer ads than the limit are returned (less than a full page), break the loop
+        if len(hits) < limit:
+            break
+
+        # Update the offset to fetch the next page of results
+        offset += limit
+
+# --- Helper function for making a GET request to the API ---
+def _get_ads(url_for_search, params):
+    headers = {"accept": "application/json"}  # Request JSON response
+    response = requests.get(url_for_search, headers=headers, params=params) # Send GET request with parameters
+    response.raise_for_status() # Raise an error for failed requests (non-2xx HTTP status)
+    return json.loads(response.content.decode("utf8")) # Decode the JSON response into a dictionary
+
 
 
 # For testing purposes
 if __name__ == "__main__":
     print("Fetching job ads...")
-    data = fetch_job_ads()
-    for item in data:
-        print(item)
