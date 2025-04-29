@@ -10,7 +10,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 # Import variables from config.py
-from config import db_path, table_name, occupation_field_list,municipalities,working_directory
+from config import db_path, table_name, occupation_field_list
 
 
 # ---------- PIPELINE FUNCTIONS ----------
@@ -29,7 +29,6 @@ def run_pipeline(table_name):
 
     # Loop through each occupation field in the list
     for field in occupation_field_list:
-            
             day_list = get_dates_to_check()
             for day in day_list:
                 tomorrow = day + timedelta(days=1)
@@ -47,24 +46,20 @@ def run_pipeline(table_name):
                     table_name=table_name
                 )
     print("Completed running the pipeline!")
+
 def get_dates_to_check():
     today = datetime.now()
     first_listing = today - timedelta(days=12)
     return_list = []
     for i in range(12):
-         day_to_test = first_listing + timedelta(days = i)
-         return_list.append(day_to_test)
-         
-
-    return return_list
-
-
-#.strftime("%Y-%m-%d")
-
+        day_to_test = first_listing + timedelta(days = i)
+        return_list.append(day_to_test)
+        
     print("Completed Filter using Datetime")
+    return return_list
+    
 
 # --- For testing purposes ---
 if __name__ == "__main__":
-    get_dates_to_check()
-    #print("Running pipeline...")
+    print("Running pipeline...")
     run_pipeline(table_name)
