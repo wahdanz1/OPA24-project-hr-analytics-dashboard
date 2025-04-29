@@ -29,7 +29,7 @@ def run_pipeline(table_name):
 
     # Loop through each occupation field in the list
     for field in occupation_field_list:
-            day_list = get_dates_to_check()
+            day_list = get_past_twelve_days()
             for day in day_list:
                 tomorrow = day + timedelta(days=1)
 
@@ -46,8 +46,8 @@ def run_pipeline(table_name):
                     table_name=table_name
                 )
     print("Completed running the pipeline!")
-
-def get_dates_to_check():
+# Returns past 12 days in datetime format
+def get_past_twelve_days():
     today = datetime.now()
     first_listing = today - timedelta(days=12)
     return_list = []
@@ -57,6 +57,15 @@ def get_dates_to_check():
         
     print("Completed Filter using Datetime")
     return return_list
+
+# Returns days from last update until now 
+def get_days_since_update(last_update_day:datetime):
+    today = datetime.now()
+    days_to_check = (today-last_update_day).days
+    return_list = []
+    for i in range(days_to_check):
+        day_to_test = last_update_day + timedelta(days = i)
+        return_list.append(day_to_test)
     
 
 # --- For testing purposes ---
