@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 # Import variables from config.py
-from config import db_path, table_name, occupation_field_list
+from config import db_path, table_name, occupation_field_dict
 
 
 # ---------- PIPELINE FUNCTIONS ----------
@@ -34,7 +34,7 @@ def run_pipeline(table_name , is_first_time:bool):
         #day_list = utils.get_days_since_update() //TODO add parameter from sql database that fetches last update in datetime format
         print("Still havent hooked up method")
     # Loop through each occupation field in the list
-    for field_name,field_code in occupation_field_list.items():
+    for field_name,field_code in occupation_field_dict.items():
             print(f"Loading {field_name}")
             for day in day_list:
                 tomorrow = day + timedelta(days=1)
