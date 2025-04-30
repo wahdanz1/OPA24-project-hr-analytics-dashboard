@@ -6,11 +6,13 @@ default_limit = 100
 default_offset = 0
 table_name = "job_ads"
 
-occupation_field_list = [
-    "X82t_awd_Qyc",  # Administration, ekonomi, juridik
-    "RPTn_bxG_ExZ",  # Försäljning, inköp, marknadsföring
-    "NYW6_mP6_vwf",  # Hälso- och sjukvård
-]
+occupation_field_dict = {
+    "Administration, ekonomi, juridik"   : "X82t_awd_Qyc",  
+    "Försäljning, inköp, marknadsföring" : "RPTn_bxG_ExZ",
+    "Hälso- och sjukvård"                : "NYW6_mP6_vwf",  
+}
+
+
 
 working_directory = Path(__file__).resolve().parent
 
