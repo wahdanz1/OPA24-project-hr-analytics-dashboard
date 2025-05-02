@@ -173,5 +173,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-#duckdb 
+# duckdb 
 *.duckdb
+
+# other
+.vscode/
