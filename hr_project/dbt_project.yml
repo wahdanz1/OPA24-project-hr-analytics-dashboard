@@ -33,3 +33,6 @@ models:
   
     src: 
       +materialized: ephemeral
+
+    dim:
+      +materialized: ephemeral # Update to 'table' or 'view' as needed
