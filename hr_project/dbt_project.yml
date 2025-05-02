@@ -35,4 +35,4 @@ models:
       +materialized: ephemeral
 
     dim:
-      +materialized: ephemeral # Update to 'table' or 'view' as needed
+      +schema: refined
