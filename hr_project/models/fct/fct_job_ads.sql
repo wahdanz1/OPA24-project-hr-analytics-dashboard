@@ -1,10 +1,11 @@
 WITH fct_job_ads AS (SELECT * FROM {{ ref('src_job_ads') }})
 
 SELECT 
-    {{ dbt_utils.generate_surrogate_key(['occupation']) }}
-    AS occupation_id,
+    publication_date,
     {{ dbt_utils.generate_surrogate_key(['id']) }}
     AS job_details_id,
+    {{ dbt_utils.generate_surrogate_key(['occupation']) }}
+    AS occupation_id,
     {{ dbt_utils.generate_surrogate_key(['employer_name',
                                         'employer_workplace',
                                         'workplace_municipality']) }}
