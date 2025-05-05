@@ -1,5 +1,3 @@
-{{ config(materialized = 'table') }} 
-
 WITH src_aux AS (
     SELECT * FROM {{ ref('src_aux') }}
 )
@@ -10,7 +8,7 @@ SELECT
         'driver_license',
         'access_to_own_car'
     ]
-    ) }} AS auxilliary_attributes_id,
+    ) }} AS auxiliary_attributes_id,
     experience_required,
     driver_license,
     access_to_own_car
