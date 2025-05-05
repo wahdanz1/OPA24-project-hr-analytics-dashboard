@@ -33,3 +33,9 @@ models:
   
     src: 
       +materialized: ephemeral
+
+    dim:
+      +schema: refined
+
+    fct:
+      +schema: refined
