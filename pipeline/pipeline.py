@@ -29,7 +29,7 @@ def run_pipeline(table_name , is_first_time:bool):
     pipeline = create_pipeline()
     if is_first_time:
         day_list = utils.get_all_days()
-        utils.delete_duckdb_file()
+        # utils.delete_duckdb_file()
     else:
         #day_list = utils.get_days_since_update() //TODO add parameter from sql database that fetches last update in datetime format
         print("Still havent hooked up method")
