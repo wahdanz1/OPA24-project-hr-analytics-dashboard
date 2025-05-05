@@ -1,6 +1,7 @@
 import dlt
 import requests
 import json
+import time
 
 # To be able to import config.py and access its variables
 import sys
@@ -15,7 +16,7 @@ from config import base_url
 
 # ---------- RESOURCE FUNCTIONS ----------
 # --- Function for yield job ads ---
-@dlt.resource(write_disposition="append")
+@dlt.resource(write_disposition="merge", primary_key="id")
 def jobsearch_resource(params):
     url_for_search = f"{base_url}/search"
     limit = params.get("limit", 100)
@@ -51,6 +52,10 @@ def jobsearch_resource(params):
 # --- Helper function for making a GET request to the API ---
 def _get_ads(url_for_search, params):
     headers = {"accept": "application/json"}  # Request JSON response
+    # Add a sleep to respect the endpoint
+    sleep_time = 1
+    print(f"Sleeping for {sleep_time} second(s)...")
+    time.sleep(sleep_time)  # Uncomment if you want to add a delay between requests
     response = requests.get(url_for_search, headers=headers, params=params) # Send GET request with parameters
     response.raise_for_status() # Raise an error for failed requests (non-2xx HTTP status)
     return json.loads(response.content.decode("utf8")) # Decode the JSON response into a dictionary
