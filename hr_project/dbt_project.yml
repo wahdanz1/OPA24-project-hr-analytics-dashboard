@@ -36,3 +36,6 @@ models:
 
     dim:
       +schema: refined
+
+    fct:
+      +schema: refined
