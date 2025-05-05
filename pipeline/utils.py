@@ -5,9 +5,9 @@ from config import db_path
 # Returns past 12 days in datetime format
 def get_all_days():
     today = datetime.now()
-    first_listing = today - timedelta(days=183) # 183 = 6 months, used for inital pipeline-run
+    first_listing = today - timedelta(days=183) # 183 = 6 months, used for inital pipeline-run, change to 10 for last 10 days
     return_list = []
-    for i in range(183):
+    for i in range(183): # 183 = 6 months, used for inital pipeline-run, change to 11 for last 10 days
         day_to_test = first_listing + timedelta(days = i)
         return_list.append(day_to_test)
         
