@@ -2,7 +2,7 @@ WITH src_aux AS (
     SELECT * FROM {{ ref('src_aux') }}
 )
 SELECT
-    DISTINCT {{ dbt_utils.generate_surrogate_key(
+    {{ dbt_utils.generate_surrogate_key(
         [
         'experience_required',
         'driver_license',
