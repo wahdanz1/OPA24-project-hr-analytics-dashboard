@@ -11,4 +11,4 @@ SELECT
     scope_of_work__min AS scope_of_work_min,
     scope_of_work__max AS scope_of_work_max
 FROM 
-      stg_job_ads
+    stg_job_ads

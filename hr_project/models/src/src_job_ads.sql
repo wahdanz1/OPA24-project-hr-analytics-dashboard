@@ -6,7 +6,9 @@ SELECT
     employer__name AS employer_name, -- dim_employer ID
     employer__workplace AS employer_workplace, -- dim_employer ID
     workplace_address__municipality AS workplace_municipality, -- dim_employer ID
-    -- dim_aux ID
+    experience_required, -- dim_aux ID
+    driving_license_required AS driver_license, -- dim_aux ID
+    access_to_own_car, -- dim_aux ID
     number_of_vacancies AS vacancies,
     relevance, 
     application_deadline

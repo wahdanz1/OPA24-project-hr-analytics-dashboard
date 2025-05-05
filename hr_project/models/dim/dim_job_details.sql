@@ -1,7 +1,7 @@
 WITH src_job_details AS (SELECT * FROM {{ ref('src_job_details') }})
-      
-SELECT 
-    {{dbt_utils.generate_surrogate_key(['id']) }} AS job_details_id,
+
+SELECT DISTINCT
+    {{ dbt_utils.generate_surrogate_key(['id']) }} AS job_details_id,
     headline,
     description,
     description_html_formatted,
@@ -11,4 +11,4 @@ SELECT
     scope_of_work_min,
     scope_of_work_max
 FROM 
-      src_job_details
+    src_job_details

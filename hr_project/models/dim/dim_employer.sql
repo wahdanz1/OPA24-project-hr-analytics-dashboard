@@ -1,6 +1,6 @@
 WITH src_employer AS (SELECT * FROM {{ ref('src_employer') }})
 
-SELECT
+SELECT DISTINCT
     {{ dbt_utils.generate_surrogate_key(['employer_name',
                                         'employer_workplace',
                                         'workplace_municipality'])

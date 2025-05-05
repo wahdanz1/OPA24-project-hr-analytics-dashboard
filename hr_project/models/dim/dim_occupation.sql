@@ -1,7 +1,7 @@
 WITH src_occupation AS (SELECT * FROM {{ ref('src_occupation') }})
 
-SELECT 
-    {{dbt_utils.generate_surrogate_key(['occupation_id'])}} AS occupation_id,
+SELECT DISTINCT
+    {{ dbt_utils.generate_surrogate_key(['occupation']) }} AS occupation_id,
     occupation,
     occupation_group,
     occupation_field

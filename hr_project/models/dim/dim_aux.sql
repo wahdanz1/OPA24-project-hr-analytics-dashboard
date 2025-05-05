@@ -1,7 +1,5 @@
-WITH src_aux AS (
-    SELECT * FROM {{ ref('src_aux') }}
-)
-SELECT
+WITH src_aux AS (SELECT * FROM {{ ref('src_aux') }})
+SELECT DISTINCT
     {{ dbt_utils.generate_surrogate_key(
         [
         'experience_required',
