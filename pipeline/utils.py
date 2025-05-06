@@ -2,27 +2,21 @@ from datetime import datetime,timedelta
 import os
 from config import db_path
 
-# Returns past 12 days in datetime format
-def get_all_days():
+# Returns X past days since datetime.now() in a list format
+# 183 days for new run and 
+# X days where X is time since last update
+def get_past_days(past_days : int):
     today = datetime.now()
-    first_listing = today - timedelta(days=183) # 183 = 6 months, used for inital pipeline-run, change to 10 for last 10 days
+    first_listing = today - timedelta(days=past_days) 
     return_list = []
-    for i in range(183): # 183 = 6 months, used for inital pipeline-run, change to 11 for last 10 days
+    for i in range(past_days+1): 
         day_to_test = first_listing + timedelta(days = i)
         return_list.append(day_to_test)
         
-    print("Completed Filter using Datetime")
+    print(f"Retrieved a list with the past {past_days} days")
     return return_list
 
-# Returns days from last update until now 
-def get_days_since_update(last_update_day:datetime):
-    today = datetime.now()
-    days_to_check = (today-last_update_day).days
-    return_list = []
-    for i in range(days_to_check):
-        day_to_test = last_update_day + timedelta(days = i)
-        return_list.append(day_to_test)
-    return return_list
+
     
 
 
