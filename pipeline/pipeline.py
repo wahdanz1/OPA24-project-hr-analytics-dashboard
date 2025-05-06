@@ -28,11 +28,12 @@ def create_pipeline():
 def run_pipeline(table_name , is_first_time:bool):
     pipeline = create_pipeline()
     if is_first_time:
-        day_list = utils.get_all_days()
-        # utils.delete_duckdb_file()
+        day_list = utils.get_past_days(183)
+        utils.delete_duckdb_file()
+        print("Creating New Pipeline")
     else:
-        #day_list = utils.get_days_since_update() //TODO add parameter from sql database that fetches last update in datetime format
-        print("Still havent hooked up method")
+        day_list = utils.get_past_days(3) 
+        print("Updating Pipeline")
     # Loop through each occupation field in the list
     for field_name,field_code in occupation_field_dict.items():
             print(f"Loading {field_name}")
@@ -56,4 +57,4 @@ def run_pipeline(table_name , is_first_time:bool):
 # --- For testing purposes ---
 if __name__ == "__main__":
     print("Running pipeline...")
-    run_pipeline(table_name,is_first_time=True)
+    run_pipeline(table_name,is_first_time=False)
