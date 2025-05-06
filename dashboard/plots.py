@@ -26,8 +26,25 @@ def create_horizontal_bar_chart(data):
         text=data["distinct_occupations"],
         textposition="auto",
         insidetextanchor="end",
-        textfont=dict(size=12),
+        textfont=dict(size=14),
         hovertemplate="%{y} has %{x} distinct occupations",
+    )
+
+    return fig
+
+# Create a line chart using Plotly
+def create_line_chart(data):
+    fig = px.line(
+        data,
+        x="week",
+        y="distinct_occupations",
+        labels={
+            "week": "Week",
+            "workplace_municipality": "Municipality",
+            "distinct_occupations": "Distinct occupations"
+        },
+        title="Distinct Occupations per Municipality (Over Time)",
+        color="workplace_municipality",
     )
 
     return fig
