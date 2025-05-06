@@ -1,17 +1,22 @@
 import streamlit as st
-import plotly.express as px
-from dashboard.utils import get_distinct_occupations
+from dashboard.utils import fetch_data_from_db
+from dashboard.plots import create_horizontal_bar_chart
 
 st.title("HR Dashboard")
 
 # ----- Put your code for the graphs/data below this line! -----
 
 # Header and description for the first graph
-st.header("Distinct occupations per municipality")
+st.header("Muncipality-based data")
 st.markdown("This graph shows the number of distinct occupations per municipality.")
 
 # Send a query to the database to get the data for the graph
-data = get_distinct_occupations()
+query = f"""
+        SELECT *
+        FROM marts.distinct_occupations_per_municipality
+        LIMIT 5
+    """
+data = fetch_data_from_db(query)
 
 # Check if the data is empty before plotting
 # If the data is not empty, create a bar chart using Plotly
@@ -20,17 +25,5 @@ if not data.empty:
     data = data.sort_values(by="distinct_occupations", ascending=True)
 
     # Create a bar chart using Plotly
-    fig = px.bar(
-        data,
-        x="distinct_occupations",
-        y="workplace_municipality",
-        orientation="h",
-        labels={
-            "workplace_municipality": "Municipality",
-            "distinct_occupations": "Distinct Occupations"
-        },
-        title="Distinct Occupations per Municipality",
-        color="distinct_occupations",
-        color_continuous_scale=px.colors.sequential.Purp,
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    fig1 = create_horizontal_bar_chart(data)
+    st.plotly_chart(fig1, use_container_width=True)
