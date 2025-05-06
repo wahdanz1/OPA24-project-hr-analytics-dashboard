@@ -1,29 +1,41 @@
 import plotly.express as px
 
 # Create a horizontal bar chart using Plotly
-def create_horizontal_bar_chart(data):
+def create_horizontal_bar_chart(data,**kwargs ):
+                                
+    x_value = kwargs.pop("x_value", "distinct_occupations")
+    y_value = kwargs.pop("y_value", "workplace_municipality")
+    x_label = kwargs.pop("x_label", "")
+    y_label = kwargs.pop("y_label", "Distinct Occupations per Municipality")
+    is_horizontal = kwargs.pop("is_horizontal", True)
+    title = kwargs.pop("title", "Distinct Occupations per Municipality")
+    color_collumn = kwargs.pop("color_collumn", "distinct_occupations")
+    margin = kwargs.pop("margin", dict(l=50, r=50, t=50, b=40))
+    color_gradient = kwargs.pop("color_gradient", px.colors.diverging.Spectral)
+
     fig = px.bar(
         data,
-        x="distinct_occupations",
-        y="workplace_municipality",
-        orientation="h",
+        x=x_value,
+        y=y_value,
+        orientation="h" if is_horizontal else "v",
         labels={
-            "workplace_municipality": "",
-            "distinct_occupations": "Number of distinct occupations"
+            x_value: x_label,
+            y_value: y_label
         },
-        title="Distinct Occupations per Municipality",
-        color="distinct_occupations",
-        color_continuous_scale=px.colors.diverging.Spectral,
+        title=title,
+        color=color_collumn,
+        color_continuous_scale=color_gradient,
+        **kwargs
     )
 
     fig.update_layout(
-        margin=dict(l=50, r=50, t=50, b=40),
+        margin=margin,
         yaxis_title=None,
         title_x=0.0,
     )
 
     fig.update_traces(
-        text=data["distinct_occupations"],
+        text=data[x_value],
         textposition="auto",
         insidetextanchor="end",
         textfont=dict(size=12),
