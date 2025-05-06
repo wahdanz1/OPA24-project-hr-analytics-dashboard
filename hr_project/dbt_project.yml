@@ -39,3 +39,7 @@ models:
 
     fct:
       +schema: refined
+
+    marts:
+      +schema: marts
+      +materialized: table
