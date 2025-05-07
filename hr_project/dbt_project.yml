@@ -40,6 +40,9 @@ models:
     fct:
       +schema: refined
 
+    int:
+      +materialized: ephemeral
+
     marts:
       +schema: marts
       +materialized: table
