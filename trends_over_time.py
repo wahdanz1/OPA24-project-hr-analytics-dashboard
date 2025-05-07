@@ -1,12 +1,13 @@
 import streamlit as st
 from dashboard.utils import fetch_data_from_db
-from dashboard.plots import create_horizontal_bar_chart
-
+from dashboard.plots import create_horizontal_bar_chart, create_line_chart
+# Set the page layout to wide
+st.set_page_config(layout="wide")
 st.title("HR Dashboard")
 
 # ----- Put your code for the graphs/data below this line! -----
 
-# Header and description for the first graph
+# Header and description
 st.header("Trends")
 st.markdown("")
 st.markdown("This graph shows the trends in job vacancies over time.")
@@ -20,7 +21,7 @@ days =st.select_slider(
 requires_experience = "TRUE" if st.checkbox("Requires Experience", value=False) else "FALSE"
 
 # Send a query to the database to get the data for the graph
-query = f"""
+bar_query = f"""
         SELECT COUNT(vacancies) AS Jobs,occupation FROM marts.occupation_trends_over_time
         WHERE publication_date >= NOW() - INTERVAL {days} DAY AND experience_required = {requires_experience}
         GROUP BY occupation
@@ -28,21 +29,69 @@ query = f"""
         LIMIT 3
 
     """
-data = fetch_data_from_db(query)
-
+# Query to get job openings over time for top occupations
+line_query = f"""
+    WITH top_occupations AS (
+        SELECT occupation
+        FROM marts.occupation_trends_over_time
+        WHERE publication_date >= NOW() - INTERVAL {days} DAY
+          AND experience_required = {requires_experience}
+        GROUP BY occupation
+        ORDER BY COUNT(*) DESC
+        LIMIT 3
+    )
+    SELECT
+        DATE_TRUNC('day', publication_date) AS week,
+        occupation,
+        COUNT(*) AS distinct_occupations
+    FROM marts.occupation_trends_over_time
+    WHERE publication_date >= NOW() - INTERVAL {days} DAY
+      AND experience_required = {requires_experience}
+      AND occupation IN (SELECT occupation FROM top_occupations)
+    GROUP BY week, occupation
+    ORDER BY week, occupation;
+"""
+# Fetch data from the database using the queries
+bar_data = fetch_data_from_db(bar_query)
+line_data = fetch_data_from_db(line_query)
 
 # Check if the data is empty before plotting
 # If the data is not empty, create a bar chart using Plotly
-if not data.empty:
-    # Sort by vacancies in descending order
-    data = data.sort_values(by="Jobs", ascending=True)
 
-    # Create a bar chart using Plotly
-    fig1 = create_horizontal_bar_chart(data=data, x_value="Jobs", y_value="occupation",
-                                       title=f"Job Openings in the past {days} days",
-                                       x_label="Job Openings",
-                                       y_label="Job Openings",
-                                       color_collumn="Jobs",
-                                       margin=dict(l=50, r=50, t=50, b=40))
+    
 
-    st.plotly_chart(fig1, use_container_width=True)
+
+
+# Create two columns for the bar and line charts
+col1, col2 = st.columns([1,2])
+
+
+with col1:
+    # Check if the data is empty before plotting   
+    if not bar_data.empty:
+        # Sort by vacancies in descending order
+        bar_data = bar_data.sort_values(by="Jobs", ascending=True)
+        # Create a bar chart using Plotly
+        bar_fig = create_horizontal_bar_chart(data=bar_data, x_value="Jobs", y_value="occupation",
+                                        title=f"Job Openings in the past {days} days",
+                                        x_label="Job Openings",
+                                        y_label="Job Openings",
+                                        color_collumn="Jobs",
+                                        margin=dict(l=50, r=50, t=50, b=40))
+
+        st.plotly_chart(bar_fig, use_container_width=True)
+# If the data is not empty, create a line chart using Plotly
+with col2:
+    # Check if the data is empty before plotting    
+    if not line_data.empty:
+        line_fig = create_line_chart(
+            data=line_data,
+            x_value="week",
+            y_value="distinct_occupations",
+            x_label="Date",
+            y_label="Job Openings",
+            title=f"Job Openings Over Time (Past {days} Days)",
+            color_collumn="occupation"
+        )
+        st.plotly_chart(line_fig, use_container_width=True)
+
