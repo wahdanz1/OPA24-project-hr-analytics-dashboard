@@ -48,15 +48,19 @@ def create_horizontal_bar_chart(data,**kwargs ):
 def create_line_chart(data):
     fig = px.line(
         data,
-        x="week",
+        x="day",
         y="distinct_occupations",
         labels={
-            "week": "Week",
+            "day": "Day",
             "workplace_municipality": "Municipality",
             "distinct_occupations": "Distinct occupations"
         },
         title="Distinct Occupations per Municipality (Over Time)",
         color="workplace_municipality",
+    )
+
+    fig.update_layout(
+        height=600
     )
 
     return fig
