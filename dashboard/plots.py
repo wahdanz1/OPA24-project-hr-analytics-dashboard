@@ -45,18 +45,26 @@ def create_horizontal_bar_chart(data,**kwargs ):
     return fig
 
 # Create a line chart using Plotly
-def create_line_chart(data):
+def create_line_chart(data ,**kwargs):
+    x_value = kwargs.pop("x_value", "week")
+    y_value = kwargs.pop("y_value", "distinct_occupations")
+    x_label = kwargs.pop("x_label", "Week")
+    y_label = kwargs.pop("y_label", "Distinct Occupations")
+    title = kwargs.pop("title", "Distinct Occupations per Municipality (Over Time)")
+    color_collumn = kwargs.pop("color_collumn", "workplace_municipality")
+    
+
     fig = px.line(
         data,
-        x="week",
-        y="distinct_occupations",
+        x=x_value,
+        y=y_value,
         labels={
-            "week": "Week",
-            "workplace_municipality": "Municipality",
-            "distinct_occupations": "Distinct occupations"
+            x_value: x_label,
+            y_value: y_label
+
         },
-        title="Distinct Occupations per Municipality (Over Time)",
-        color="workplace_municipality",
+        title=title,
+        color=color_collumn,
     )
 
-    return fig
+    return fig#
