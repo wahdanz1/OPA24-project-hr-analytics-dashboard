@@ -1,17 +1,11 @@
 import streamlit as st
 from dashboard.utils import fetch_data_from_db
 from dashboard.plots import create_horizontal_bar_chart, create_line_chart
-# Set the page layout to wide
-st.set_page_config(layout="wide")
-st.title("HR Dashboard")
 
 # ----- Put your code for the graphs/data below this line! -----
 
-# Header and description
-st.header("Trends")
-st.markdown("")
+# Description
 st.markdown("This graph shows the trends in job vacancies over time.")
-st.markdown("")
 # Select the number of days to look back
 st.markdown("Select the number of days to look back:")
 
