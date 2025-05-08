@@ -2,7 +2,9 @@ import streamlit as st
 from dashboard.utils import fetch_data_from_db
 from dashboard.plots import create_horizontal_bar_chart, create_line_chart
 
-# ----- Put your code for the graphs/data below this line! -----
+def occupation_trends_page():
+    st.header("Occupation Trends Over Time", divider=True)
+    pass
 
 # Description
 st.markdown("This graph shows the trends in job vacancies over time.")
@@ -34,7 +36,7 @@ line_query = f"""
         SELECT occupation
         FROM marts.occupation_trends_over_time
         WHERE publication_date >= NOW() - INTERVAL {days} DAY
-          AND experience_required = {requires_experience}
+            AND experience_required = {requires_experience}
         GROUP BY occupation
         ORDER BY COUNT(*) DESC
         LIMIT {limit}
@@ -45,8 +47,8 @@ line_query = f"""
         COUNT(*) AS distinct_occupations
     FROM marts.occupation_trends_over_time
     WHERE publication_date >= NOW() - INTERVAL {days} DAY
-      AND experience_required = {requires_experience}
-      AND occupation IN (SELECT occupation FROM top_occupations)
+        AND experience_required = {requires_experience}
+        AND occupation IN (SELECT occupation FROM top_occupations)
     GROUP BY week, occupation
     ORDER BY week, occupation;
 """
