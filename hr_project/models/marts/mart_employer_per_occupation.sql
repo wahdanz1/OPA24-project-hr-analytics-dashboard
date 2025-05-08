@@ -5,5 +5,5 @@ SELECT
     ads_posted_last_30_days,
     RANK() OVER (PARTITION BY occupation ORDER BY ads_posted_last_30_days DESC) AS employer_rank
 FROM int_ads_per_employer_occupation
-QUALIFY employer_rank <= 10;
+QUALIFY employer_rank <= 10
 
