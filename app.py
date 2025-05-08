@@ -1,9 +1,6 @@
 import streamlit as st
 st.set_page_config(layout="wide")
 
-import occupation_trends as ot
-import municipality_coverage as mc
-import top_employers as te
 
 st.title("HR Dashboard")
 
@@ -25,16 +22,20 @@ if page_selection == "Summary":
 
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends Over Time":
+    import occupation_trends as ot
     ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Municipality Coverage
 elif page_selection == "Municipality Coverage":
+    import municipality_coverage as mc
     mc.municipality_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
 elif page_selection == "Top Employers":
+    import top_employers as te
+    st.header("Top Employers per Occupation", divider=True)
     te.top_employers_page()
 
 # --------------------------------------------------------
