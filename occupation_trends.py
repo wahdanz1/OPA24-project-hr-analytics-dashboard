@@ -77,7 +77,7 @@ with col1:
                                         title=f"Job Openings in the past {days} days",
                                         x_label="Job Openings",
                                         y_label="Job Openings",
-                                        color_collumn="Jobs",
+                                        color_column="Jobs",
                                         margin=dict(l=50, r=50, t=50, b=40))
 
         st.plotly_chart(bar_fig, use_container_width=True)
@@ -92,7 +92,7 @@ with col2:
             x_label="Date",
             y_label="Job Openings",
             title=f"Job Openings Over Time (Past {days} Days)",
-            color_collumn="occupation"
+            color_column="occupation"
         )
         st.plotly_chart(line_fig, use_container_width=True)
 
