@@ -14,9 +14,14 @@ st.markdown("This graph shows the trends in job vacancies over time.")
 st.markdown("")
 # Select the number of days to look back
 st.markdown("Select the number of days to look back:")
+
 days =st.select_slider(
     "Days",
-    options=[ 7, 30, 60, 90, 180],
+    options=[x for x in range(1, 180)],
+)
+limit = st.select_slider(
+    "How many occupations to show?",
+    options=[x for x in range(1, 21)],
 )
 requires_experience = "TRUE" if st.checkbox("Requires Experience", value=False) else "FALSE"
 
@@ -26,7 +31,7 @@ bar_query = f"""
         WHERE publication_date >= NOW() - INTERVAL {days} DAY AND experience_required = {requires_experience}
         GROUP BY occupation
         ORDER BY COUNT(vacancies) DESC
-        LIMIT 3
+        LIMIT {limit}
 
     """
 # Query to get job openings over time for top occupations
@@ -38,7 +43,7 @@ line_query = f"""
           AND experience_required = {requires_experience}
         GROUP BY occupation
         ORDER BY COUNT(*) DESC
-        LIMIT 3
+        LIMIT {limit}
     )
     SELECT
         DATE_TRUNC('day', publication_date) AS week,
