@@ -35,7 +35,6 @@ elif page_selection == "Municipality Coverage":
 # --------------------------------------------------------
 # Page 4: Top Employers
 elif page_selection == "Top Employers":
-    st.header("Top Employers per Occupation", divider=True)
     te.top_employers_page()
 
 # --------------------------------------------------------
