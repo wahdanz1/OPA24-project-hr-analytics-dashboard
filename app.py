@@ -25,20 +25,18 @@ if page_selection == "Summary":
 
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends Over Time":
-    st.header("Occupation Trends", divider=True)
-    ot.occupation_trends_over_time()
+    ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Municipality Coverage
 elif page_selection == "Municipality Coverage":
-    st.header("Muncipality-based data", divider=True)
-    mc.distinct_occupations_per_municipality()
+    mc.municipality_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
 elif page_selection == "Top Employers":
     st.header("Top Employers per Occupation", divider=True)
-    te.top_employers_per_occupation()
+    te.top_employers_page()
 
 # --------------------------------------------------------
 else:
