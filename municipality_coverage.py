@@ -1,5 +1,5 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, set_occupation_field_name
+from dashboard.utils import fetch_data_from_db, build_where_clause
 from dashboard.plots import create_horizontal_bar_chart, create_vertical_bar_chart
 
 def municipality_coverage_page():
@@ -12,17 +12,8 @@ def distinct_occupations_per_municipality():
     # Description for the first graph
     st.markdown("This graph shows the number of distinct occupations per municipality.")
 
-    # Check if the occupation_field is "All fields" and set it to None if so
-    occupation_field_choice = st.session_state.get("occupation_field_choice", ["All fields"])
-    occupation_field_names = set_occupation_field_name(occupation_field_choice)
-
-    # Based on the occupation_field_id, set the WHERE clause for the SQL query
-    if occupation_field_names is None:
-        where_clause = ""
-    else:
-        # Create a list of quoted strings for SQL IN clause
-        id_list = ", ".join(f"'{id}'" for id in occupation_field_names)
-        where_clause = f"WHERE occupation_field IN ({id_list})"
+    # Build the WHERE clause for the SQL query based on the selected occupation field
+    where_clause = build_where_clause()
 
     # Send a query to the database to get the data for the graph
     limit_value = 15 # Adjust this value as needed
@@ -60,17 +51,8 @@ def top_3_occupations_per_city():
     # Description for the first graph
     st.markdown("This graph shows the top 3 occupations per city. You can filter the data by municipality.")
 
-    # Check if the occupation_field is "All fields" and set it to None if so
-    occupation_field_choice = st.session_state.get("occupation_field_choice", ["All fields"])
-    occupation_field_names = set_occupation_field_name(occupation_field_choice)
-
-    # Based on the occupation_field_id, set the WHERE clause for the SQL query
-    if occupation_field_names is None:
-        where_clause = ""
-    else:
-        # Create a list of quoted strings for SQL IN clause
-        id_list = ", ".join(f"'{id}'" for id in occupation_field_names)
-        where_clause = f"WHERE occupation_field IN ({id_list})"
+    # Build the WHERE clause for the SQL query based on the selected occupation field
+    where_clause = build_where_clause()
 
     # Send a query to the database to get the data for the graph
     query2 = f"""
