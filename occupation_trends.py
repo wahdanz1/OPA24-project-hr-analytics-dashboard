@@ -18,7 +18,7 @@ def everything_test():
     name_string, limit_value, start_day, end_day = get_sidebar_filters()
     # Send a query to the database to get the data for the graph
     bar_query = f"""
-            SELECT COUNT(vacancies) AS Jobs,occupation FROM marts.occupation_trends_over_time
+            SELECT COUNT(vacancies) AS Jobs,occupation FROM marts.mart_occupation_trends_over_time
             WHERE experience_required = {requires_experience}
                 AND publication_date
                 BETWEEN (NOW() - INTERVAL {end_day} DAY)
@@ -33,7 +33,7 @@ def everything_test():
     line_query = f"""
         WITH top_occupations AS (
             SELECT occupation
-            FROM marts.occupation_trends_over_time
+            FROM marts.mart_occupation_trends_over_time
             WHERE experience_required = {requires_experience}
                 And occupation_field IN ({name_string})
                 AND publication_date
@@ -47,7 +47,7 @@ def everything_test():
             DATE_TRUNC('day', publication_date) AS week,
             occupation,
             COUNT(*) AS distinct_occupations
-        FROM marts.occupation_trends_over_time
+        FROM marts.mart_occupation_trends_over_time
         WHERE experience_required = {requires_experience}
             AND occupation IN (SELECT occupation FROM top_occupations)
             AND publication_date
