@@ -1,5 +1,5 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, get_occupation_field_name_string
+from dashboard.utils import fetch_data_from_db, get_sidebar_filters
 from dashboard.plots import create_horizontal_bar_chart
 
 def municipality_coverage_page():
@@ -12,18 +12,18 @@ def distinct_occupations_per_municipality():
     st.markdown("This graph shows the number of distinct occupations per municipality.")
 
     # Build the string for the SQL query based on the selected occupation field
-    name_string = get_occupation_field_name_string()
+    name_string, limit_value, interval_value = get_sidebar_filters()
 
     # Send a query to the database to get the data for the graph
-    limit_value = 15 # Adjust this value as needed
     query1 = f"""
-            SELECT
-                workplace_municipality,
-                distinct_occupations,
+            SELECT *
             FROM marts.mart_distinct_occupations_per_municipality
             WHERE occupation_field IN ({name_string})
+            AND publication_date
+                BETWEEN (NOW() - INTERVAL {interval_value[1]} DAY)
+                    AND (NOW() - INTERVAL {interval_value[0]} DAY)
             LIMIT {limit_value}
-        """
+            """
     st.code(query1, language="sql")
     data1 = fetch_data_from_db(query1)
 
