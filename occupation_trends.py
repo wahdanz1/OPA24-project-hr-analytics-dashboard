@@ -1,5 +1,5 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db
+from dashboard.utils import fetch_data_from_db, get_occupation_field_name_string
 from dashboard.plots import create_horizontal_bar_chart, create_line_chart
 
 def occupation_trends_page():
@@ -8,6 +8,7 @@ def occupation_trends_page():
     pass
 
 def everything_test():
+    
     # Description
     st.markdown("This graph shows the trends in job vacancies over time.")
     # Select the number of days to look back
@@ -26,12 +27,15 @@ def everything_test():
     # Send a query to the database to get the data for the graph
     bar_query = f"""
             SELECT COUNT(vacancies) AS Jobs,occupation FROM marts.occupation_trends_over_time
-            WHERE publication_date >= NOW() - INTERVAL {days} DAY AND experience_required = {requires_experience}
+            WHERE publication_date >= NOW() - INTERVAL {days} DAY 
+                AND experience_required = {requires_experience}
+                AND occupation_field IN ({get_occupation_field_name_string()})
             GROUP BY occupation
             ORDER BY COUNT(vacancies) DESC
             LIMIT {limit}
 
         """
+    st.code(bar_query, language="sql")
     # Query to get job openings over time for top occupations
     line_query = f"""
         WITH top_occupations AS (
@@ -39,6 +43,7 @@ def everything_test():
             FROM marts.occupation_trends_over_time
             WHERE publication_date >= NOW() - INTERVAL {days} DAY
                 AND experience_required = {requires_experience}
+                And occupation_field IN ({get_occupation_field_name_string()})
             GROUP BY occupation
             ORDER BY COUNT(*) DESC
             LIMIT {limit}
@@ -54,6 +59,7 @@ def everything_test():
         GROUP BY week, occupation
         ORDER BY week, occupation;
     """
+    st.code(line_query, language="sql")
     # Fetch data from the database using the queries
     bar_data = fetch_data_from_db(bar_query)
     line_data = fetch_data_from_db(line_query)
