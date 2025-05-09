@@ -31,7 +31,6 @@ def everything_test(sidebar_stats: sidebar_stats):
             LIMIT {sidebar_stats.get_limit()}
 
         """
-    st.code(bar_query, language="sql")
     # Query to get job openings over time for top occupations
     line_query = f"""
         WITH top_occupations AS (
@@ -55,7 +54,7 @@ def everything_test(sidebar_stats: sidebar_stats):
         GROUP BY week, occupation
         ORDER BY week, occupation;
     """
-    st.code(line_query, language="sql")
+
     # Fetch data from the database using the queries
     bar_data = fetch_data_from_db(bar_query)
     line_data = fetch_data_from_db(line_query)
