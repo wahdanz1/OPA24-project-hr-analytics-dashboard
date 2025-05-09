@@ -38,6 +38,8 @@ def get_sidebar_filters():
         name_string = ", ".join(f"'{name}'" for name in occupation_field_names)
 
     limit_value = st.session_state.get("sidebar_limit")
-    interval_value = st.session_state.get("sidebar_interval")
 
-    return name_string, limit_value, interval_value
+    interval_value = st.session_state.get("sidebar_interval")
+    start_day, end_day = sorted(interval_value)
+
+    return name_string, limit_value, start_day, end_day

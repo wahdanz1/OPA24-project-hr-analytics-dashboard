@@ -12,7 +12,7 @@ def distinct_occupations_per_municipality():
     st.markdown("This graph shows the number of distinct occupations per municipality.")
 
     # Build the string for the SQL query based on the selected occupation field
-    name_string, limit_value, interval_value = get_sidebar_filters()
+    name_string, limit_value, start_day, end_day = get_sidebar_filters()
 
     # Send a query to the database to get the data for the graph
     query1 = f"""
@@ -20,8 +20,8 @@ def distinct_occupations_per_municipality():
             FROM marts.mart_distinct_occupations_per_municipality
             WHERE occupation_field IN ({name_string})
             AND publication_date
-                BETWEEN (NOW() - INTERVAL {interval_value[1]} DAY)
-                    AND (NOW() - INTERVAL {interval_value[0]} DAY)
+                BETWEEN (NOW() - INTERVAL {end_day} DAY)
+                    AND (NOW() - INTERVAL {start_day} DAY)
             LIMIT {limit_value}
             """
     st.code(query1, language="sql")
