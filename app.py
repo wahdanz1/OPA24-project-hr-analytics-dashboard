@@ -1,10 +1,6 @@
 import streamlit as st
 
-from dashboard.sidebar_stats import sidebar_stats
-sidebar = sidebar_stats()
 st.set_page_config(layout="wide")
-
-st.title("HR Dashboard")
 
 st.markdown(
     """
@@ -44,22 +40,25 @@ with st.sidebar:
         # default=[],
         key="occupation_field_choice",
     )
-    # Select how many top results to show
-    st.markdown("Select how many top results to show:")
+
+    # Result limit slider with key
     limit = st.select_slider(
-        "Top N",
+        label="Results to show:",
         options=[x for x in range(1, 21)],
         value=5,  # Default to the first option
+        key="sidebar_limit",
     )
-    sidebar.set_limit(limit)
-    # Select how many days to look back
-    st.markdown("Select the number of days to look back:")
-    days = st.select_slider(
-        "Days",
+
+    # Interval range slider with key
+    start_day, end_day = st.select_slider(
+        "Interval (in days):",
         options=[x for x in range(1, 181)],
-        value=30,  # Default to the first option
+        value=(1, 180),
+        key="sidebar_interval"
     )
-    sidebar.set_days(days)
+
+    test = st.session_state.get("sidebar_interval", None)
+    st.write("sidebar_interval:", test)
 
 
 # Page 1: Occupation Trends Over Time
@@ -70,7 +69,7 @@ if page_selection == "Summary":
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     import occupation_trends as ot
-    ot.occupation_trends_page(sidebar)
+    ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Municipality Coverage

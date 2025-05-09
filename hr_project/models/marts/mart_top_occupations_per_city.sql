@@ -2,6 +2,7 @@
 -- It is used to analyze the most common occupations in each city.
 WITH int_ads_per_city_occupation AS (SELECT * FROM {{ ref('int_ads_per_city_occupation') }})
 SELECT
+    publication_date,
     workplace_municipality,
     workplace_city,
     occupation,

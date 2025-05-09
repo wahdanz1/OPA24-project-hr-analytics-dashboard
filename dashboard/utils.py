@@ -25,7 +25,7 @@ def set_occupation_field_name(occupation_field_choices):
     return [mapping[choice] for choice in occupation_field_choices if choice in mapping]
 
 # Function for building the occupation name string, based on the selected occupation field(s)
-def get_occupation_field_name_string():
+def get_sidebar_filters():
     # Check if the occupation_field is empty and set it to None if so
     occupation_field_choices = st.session_state.get("occupation_field_choice", [])
     occupation_field_names = set_occupation_field_name(occupation_field_choices)
@@ -36,5 +36,8 @@ def get_occupation_field_name_string():
     else:
         # Create a string with the selected occupation fields
         name_string = ", ".join(f"'{name}'" for name in occupation_field_names)
-    
-    return name_string
+
+    limit_value = st.session_state.get("sidebar_limit")
+    interval_value = st.session_state.get("sidebar_interval")
+
+    return name_string, limit_value, interval_value
