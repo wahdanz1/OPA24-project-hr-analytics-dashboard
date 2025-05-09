@@ -1,7 +1,6 @@
 import streamlit as st
 st.set_page_config(layout="wide")
 
-
 st.title("HR Dashboard")
 
 st.markdown(
@@ -16,23 +15,42 @@ st.markdown(
 )
 
 with st.sidebar:
+    # Sidebar title
+    st.title("HR Dashboard")
+
+    # Page selection with key
     page_selection = st.radio(
-        "Choose a statistics page",
+        "Choose something:",
         (
-            "Summary", # Page 1
-            "Occupation Trends Over Time", # Page 2
-            "Municipality Coverage", # Page 3
-            "Top Employers", # Page 4
+            "Summary", # Main page
+            "Occupation Trends",
+            "Municipality Coverage",
+            "Top Employers",
         ),
+        key="page_selection",
     )
+
+    ## Occupation field selection with key
+    occupation_field_choice = st.multiselect(
+        "Select one or more occupation fields",
+        options=[
+            "All fields",
+            "Administration, finance & law",
+            "Sales & marketing",
+            "Healthcare",
+        ],
+        default=["All fields"],
+        key="occupation_field_choice",
+    )
+
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
     # Chipp function calls here
-    st.header("Statistics Summary", divider=True)
+    st.header("Summary", divider=True)
 
 # Page 2: Occupation Trends Over Time
-elif page_selection == "Occupation Trends Over Time":
+elif page_selection == "Occupation Trends":
     import occupation_trends as ot
     ot.occupation_trends_page()
 
