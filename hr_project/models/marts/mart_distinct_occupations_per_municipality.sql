@@ -8,7 +8,7 @@ SELECT
     ja.publication_date,
     e.workplace_municipality,
     o.occupation_field,
-    COUNT(DISTINCT ja.occupation_id) AS distinct_occupations
+    ja.occupation_id
 FROM fct_job_ads ja
 
 JOIN refined.dim_employer e
@@ -17,5 +17,3 @@ JOIN refined.dim_occupation o
     ON o.occupation_id = ja.occupation_id
 
 WHERE workplace_municipality IS NOT NULL
-
-GROUP BY ja.publication_date, e.workplace_municipality, o.occupation_field

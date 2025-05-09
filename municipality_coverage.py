@@ -16,12 +16,16 @@ def distinct_occupations_per_municipality():
 
     # Send a query to the database to get the data for the graph
     query1 = f"""
-            SELECT *
+            SELECT
+                workplace_municipality,
+                COUNT(DISTINCT occupation_id) AS distinct_occupations
             FROM marts.mart_distinct_occupations_per_municipality
             WHERE occupation_field IN ({name_string})
             AND publication_date
                 BETWEEN (NOW() - INTERVAL {end_day} DAY)
                     AND (NOW() - INTERVAL {start_day} DAY)
+            GROUP BY workplace_municipality
+            ORDER BY distinct_occupations DESC
             LIMIT {limit_value}
             """
     st.code(query1, language="sql")
