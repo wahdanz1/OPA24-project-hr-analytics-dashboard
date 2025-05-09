@@ -1,5 +1,5 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, build_where_clause
+from dashboard.utils import fetch_data_from_db, get_occupation_field_name_string
 from dashboard.plots import create_horizontal_bar_chart, create_vertical_bar_chart
 
 def municipality_coverage_page():
@@ -13,7 +13,8 @@ def distinct_occupations_per_municipality():
     st.markdown("This graph shows the number of distinct occupations per municipality.")
 
     # Build the WHERE clause for the SQL query based on the selected occupation field
-    where_clause = build_where_clause()
+    
+    name_string = get_occupation_field_name_string()
 
     # Send a query to the database to get the data for the graph
     limit_value = 15 # Adjust this value as needed
@@ -22,7 +23,7 @@ def distinct_occupations_per_municipality():
                 workplace_municipality,
                 distinct_occupations,
             FROM marts.mart_distinct_occupations_per_municipality
-            {where_clause}
+            WHERE occupation_field IN ({name_string})
             LIMIT {limit_value}
         """
     st.code(query1, language="sql")
@@ -52,13 +53,13 @@ def top_3_occupations_per_city():
     st.markdown("This graph shows the top 3 occupations per city. You can filter the data by municipality.")
 
     # Build the WHERE clause for the SQL query based on the selected occupation field
-    where_clause = build_where_clause()
+    name_string = get_occupation_field_name_string()
 
     # Send a query to the database to get the data for the graph
     query2 = f"""
             SELECT *
             FROM marts.mart_top_occupations_per_city
-            {where_clause}
+            WHERE occupation_field IN ({name_string})
         """
     data2 = fetch_data_from_db(query2)
 

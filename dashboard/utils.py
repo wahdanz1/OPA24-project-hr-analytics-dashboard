@@ -21,18 +21,17 @@ def set_occupation_field_name(occupation_field_choices):
     
     return [mapping[choice] for choice in occupation_field_choices if choice in mapping]
 
-# Function for building the WHERE clause for SQL queries, based on the selected occupation field
-def build_where_clause() -> str:
-    # Check if the occupation_field is "All fields" and set it to None if so
+# Function for building the occupation name string, based on the selected occupation field(s)
+def get_occupation_field_name_string():
+    # Check if the occupation_field is empty and set it to None if so
     occupation_field_choices = st.session_state.get("occupation_field_choice", [])
     occupation_field_names = set_occupation_field_name(occupation_field_choices)
 
-    # Based on the occupation_field_names, set the WHERE clause for the SQL query
+    # Based on the occupation_field_names, build the name_string with all occupation fields
     if occupation_field_names is None:
-        where_clause = ""
+        name_string = "'Administration, ekonomi, juridik', 'Försäljning, inköp, marknadsföring','Hälso- och sjukvård'"
     else:
-        # Create a list of quoted strings for SQL IN clause
-        name_list = ", ".join(f"'{name}'" for name in occupation_field_names)
-        where_clause = f"WHERE occupation_field IN ({name_list})"
+        # Create a string with the selected occupation fields
+        name_string = ", ".join(f"'{name}'" for name in occupation_field_names)
     
-    return where_clause
+    return name_string
