@@ -34,12 +34,11 @@ with st.sidebar:
     occupation_field_choice = st.multiselect(
         "Select one or more occupation fields",
         options=[
-            "All fields",
             "Administration, finance & law",
             "Sales & marketing",
             "Healthcare",
         ],
-        default=["All fields"],
+        # default=[],
         key="occupation_field_choice",
     )
 
