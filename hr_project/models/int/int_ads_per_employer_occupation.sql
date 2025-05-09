@@ -2,6 +2,7 @@ WITH fct_job_ads AS (SELECT * FROM {{ ref('fct_job_ads') }})
 SELECT
     e.employer_name,
     o.occupation,
+    o.occupation_field,
     COUNT(DISTINCT ja.job_details_id) AS ads_posted_last_30_days
     FROM fct_job_ads ja
     
