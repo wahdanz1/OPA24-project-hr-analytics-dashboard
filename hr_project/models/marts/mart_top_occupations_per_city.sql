@@ -5,6 +5,7 @@ SELECT
     workplace_municipality,
     workplace_city,
     occupation,
+    occupation_field,
     job_ad_count,
     ROW_NUMBER() OVER (PARTITION BY workplace_municipality, workplace_city ORDER BY job_ad_count DESC) AS rank
     FROM int_ads_per_city_occupation apco
