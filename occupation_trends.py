@@ -12,12 +12,7 @@ def everything_test(sidebar_stats: sidebar_stats):
     
     # Description
     st.markdown("This graph shows the trends in job vacancies over time.")
-    # Select the number of days to look back
-    st.markdown("Select the number of days to look back:")
-    limit = st.select_slider(
-        "How many occupations to show?",
-        options=[x for x in range(1, 21)],
-    )
+
     requires_experience = "TRUE" if st.checkbox("Requires Experience", value=False) else "FALSE"
 
     # Send a query to the database to get the data for the graph
@@ -76,12 +71,14 @@ def everything_test(sidebar_stats: sidebar_stats):
             # Sort by vacancies in descending order
             bar_data = bar_data.sort_values(by="Jobs", ascending=True)
             # Create a bar chart using Plotly
-            bar_fig = create_horizontal_bar_chart(data=bar_data, x_value="Jobs", y_value="occupation",
-                                            title=f"Job Openings in the past {sidebar_stats.get_days()} days",
-                                            x_label="Job Openings",
-                                            y_label="Job Openings",
-                                            color_column="Jobs",
-                                            margin=dict(l=50, r=50, t=50, b=40))
+            bar_fig = create_horizontal_bar_chart(
+                data=bar_data, x_value="Jobs",
+                y_value="occupation",
+                title=f"Job Openings in the past {sidebar_stats.get_days()} days",
+                x_label="Job Openings",
+                y_label="Job Openings",
+                color_column="Jobs",
+                margin=dict(l=50, r=50, t=50, b=40))
 
             st.plotly_chart(bar_fig, use_container_width=True)
     # If the data is not empty, create a line chart using Plotly
