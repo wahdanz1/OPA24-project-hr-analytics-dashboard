@@ -41,7 +41,6 @@ def distinct_occupations_per_municipality():
             data1,
             x_value="distinct_occupations",
             y_value="workplace_municipality",
-            y_label="Distinct Occupations per Municipality",
             title="Distinct Occupations per Municipality",
             color_column="distinct_occupations",
             hover_template="%{y} has %{x} distinct occupations"

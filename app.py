@@ -1,12 +1,13 @@
 import streamlit as st
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="HR Dashboard", layout="wide")
 
 st.markdown(
     """
     <style>
         section[data-testid="stSidebar"] {
-            width: 300px !important; # Set the width to your desired value
+            min-width: 300px !important;
+            max-width: 600px !important;
         }
     </style>
     """,
@@ -57,15 +58,12 @@ with st.sidebar:
         key="sidebar_interval"
     )
 
-    test = st.session_state.get("sidebar_interval", None)
-    st.write("sidebar_interval:", test)
-
-
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
     # Chipp function calls here
     st.header("Summary", divider=True)
 
+# --------------------------------------------------------
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     import occupation_trends as ot
