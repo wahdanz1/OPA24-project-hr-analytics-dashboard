@@ -23,7 +23,7 @@ def create_horizontal_bar_chart(data,**kwargs):
         },
         title=title,
         color=color_column,
-        color_continuous_scale=color_gradient,
+        
         **kwargs
     )
 

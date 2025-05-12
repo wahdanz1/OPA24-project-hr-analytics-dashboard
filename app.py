@@ -2,12 +2,12 @@ import streamlit as st
 
 st.set_page_config(page_title="HR Dashboard", layout="wide")
 
+current_page = st.session_state.get("page_selection", "Summary")
 st.markdown(
     """
     <style>
         section[data-testid="stSidebar"] {
-            min-width: 300px !important;
-            max-width: 600px !important;
+            max-width: 350px !important;
         }
     </style>
     """,
@@ -42,13 +42,14 @@ with st.sidebar:
         key="occupation_field_choice",
     )
 
-    # Result limit slider with key
-    limit = st.select_slider(
-        label="Results to show:",
-        options=[x for x in range(1, 21)],
-        value=5,  # Default to the first option
-        key="sidebar_limit",
-    )
+    if current_page != "Summary":
+        # Result limit slider with key
+        limit = st.select_slider(
+            label="Results to show:",
+            options=[x for x in range(1, 21)],
+            value=5,  # Default to the first option
+            key="sidebar_limit",
+        )
 
     # Interval range slider with key
     start_day, end_day = st.select_slider(
@@ -60,25 +61,30 @@ with st.sidebar:
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
-    # Chipp function calls here
-    st.header("Summary", divider=True)
+    import summary as sm
+    current_page = st.session_state.get("page_selection", "Summary")
+    sm.summary_page()
+    
 
 # --------------------------------------------------------
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     import occupation_trends as ot
+    current_page = st.session_state.get("page_selection", "Occupation Trends")
     ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Municipality Coverage
 elif page_selection == "Municipality Coverage":
     import municipality_coverage as mc
+    current_page = st.session_state.get("page_selection", "Municipality Coverage")
     mc.municipality_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
 elif page_selection == "Top Employers":
     import top_employers as te
+    current_page = st.session_state.get("page_selection", "Top Employers")
     te.top_employers_page()
 
 # --------------------------------------------------------
