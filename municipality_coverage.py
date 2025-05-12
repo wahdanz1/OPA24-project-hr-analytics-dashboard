@@ -43,7 +43,7 @@ def distinct_occupations_per_municipality():
             y_value="workplace_municipality",
             title="Distinct Occupations per Municipality",
             color_column="distinct_occupations",
-            hover_template="%{y} has %{x} distinct occupations"
+            hover_template="%{y} has %{x} distinct occupations",
             )
         st.plotly_chart(fig1, use_container_width=True)
 
