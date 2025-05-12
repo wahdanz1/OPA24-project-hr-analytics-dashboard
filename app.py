@@ -60,8 +60,9 @@ with st.sidebar:
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
-    # Chipp function calls here
-    st.header("Summary", divider=True)
+    import summary as sm
+    sm.summary_page()
+    
 
 # --------------------------------------------------------
 # Page 2: Occupation Trends Over Time
