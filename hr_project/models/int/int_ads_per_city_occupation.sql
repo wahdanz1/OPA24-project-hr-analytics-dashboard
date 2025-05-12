@@ -2,9 +2,11 @@
 -- It is used to analyze the most common (top 3) occupations in each city.
 WITH fct_job_ads AS (SELECT * FROM {{ ref('fct_job_ads') }})
 SELECT
+    ja.publication_date,
     e.workplace_municipality,
     e.workplace_city,
     o.occupation,
+    o.occupation_field,
     COUNT(DISTINCT ja.job_details_id) AS job_ad_count
     FROM fct_job_ads ja
     
@@ -13,4 +15,4 @@ SELECT
     JOIN refined.dim_occupation o
         ON o.occupation_id = ja.occupation_id
 
-    GROUP BY e.workplace_municipality, e.workplace_city, o.occupation
+    GROUP BY e.workplace_municipality, e.workplace_city, o.occupation, o.occupation_field, ja.publication_date

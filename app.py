@@ -1,13 +1,13 @@
 import streamlit as st
-st.set_page_config(layout="wide")
 
-st.title("HR Dashboard")
+st.set_page_config(page_title="HR Dashboard", layout="wide")
 
 st.markdown(
     """
     <style>
         section[data-testid="stSidebar"] {
-            width: 300px !important; # Set the width to your desired value
+            min-width: 300px !important;
+            max-width: 600px !important;
         }
     </style>
     """,
@@ -34,21 +34,36 @@ with st.sidebar:
     occupation_field_choice = st.multiselect(
         "Select one or more occupation fields",
         options=[
-            "All fields",
             "Administration, finance & law",
             "Sales & marketing",
             "Healthcare",
         ],
-        default=["All fields"],
+        # default=[],
         key="occupation_field_choice",
     )
 
+    # Result limit slider with key
+    limit = st.select_slider(
+        label="Results to show:",
+        options=[x for x in range(1, 21)],
+        value=5,  # Default to the first option
+        key="sidebar_limit",
+    )
+
+    # Interval range slider with key
+    start_day, end_day = st.select_slider(
+        "Interval (in days):",
+        options=[x for x in range(1, 181)],
+        value=(1, 180),
+        key="sidebar_interval"
+    )
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
     # Chipp function calls here
     st.header("Summary", divider=True)
 
+# --------------------------------------------------------
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     import occupation_trends as ot
