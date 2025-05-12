@@ -11,4 +11,4 @@ SELECT
     JOIN refined.dim_occupation o
         ON o.occupation_id = ja.occupation_id
     WHERE ja.publication_date >= CURRENT_DATE - INTERVAL '30 days'
-    GROUP BY o.occupation, e.employer_name
+    GROUP BY o.occupation, e.employer_name, o.occupation_field
