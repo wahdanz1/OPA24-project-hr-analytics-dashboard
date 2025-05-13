@@ -36,7 +36,7 @@ SELECT
     a.driver_license,
     a.access_to_own_car
 
-FROM refined.fct_job_ads f
-LEFT JOIN refined.dim_occupation o ON f.occupation_id = o.occupation_id
-LEFT JOIN refined.dim_aux a ON f.aux_id = a.auxiliary_attributes_id
-LEFT JOIN refined.dim_employer e ON f.employer_id = e.employer_id
+FROM fct f
+LEFT JOIN dim_occ o ON f.occupation_id = o.occupation_id
+LEFT JOIN dim_aux a ON f.aux_id = a.auxiliary_attributes_id
+LEFT JOIN dim_emp e ON f.employer_id = e.employer_id
