@@ -44,4 +44,9 @@ Now, you are given a task to create a data pipeline for the team of talent acqui
 5. **Install dependencies from the ```requirements.lock```-file:**
     ```git bash
     uv pip install -r requirements.lock.txt
-6. **Currently there is no app to run - steps for that will be added later!**
+6. **Run the script in the project root called ```first_time_run.py```**
+    > ⚠️ Do note that this process might take some time - the first pipeline-run will fetch data from 6 months back up until present day.
+7. **Run the Streamlit Dashboard with the following command (from project root):**
+    ```git bash
+    streamlit run app.py
+8. **Use the buttons in the sidebar to navigate the dashboard!**
