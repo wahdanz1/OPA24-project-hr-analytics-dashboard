@@ -37,13 +37,16 @@ def display_kpis():
     display_dataframes()
 
 def display_dataframes():
-    col1,col2 = st.columns(2)
+    col1,col2 = st.columns([1,1])
+    
+
+    
     with col1:
         top_occupations = get_top_occupations()
         st.subheader("Top 5 Occupations")
         st.dataframe(top_occupations, use_container_width=True)
     with col2:
-        st.subheader("Jobs with below 25% experience required")
+        st.subheader("Jobs requiring little to no experience")
         least_experience_occupation_df = get_top_5_least_experience_occupations()
         st.dataframe(least_experience_occupation_df, use_container_width=True)
     # Display the top 5 occupations
@@ -77,14 +80,14 @@ def get_top_occupations():
 
     # Query to get the top occupations
     query = f"""
-        SELECT d.occupation, COUNT(*) AS ad_count
+        SELECT d.occupation, SUM(vacancies) AS total_vacancies
         FROM refined.fct_job_ads f
         JOIN refined.dim_occupation d ON f.occupation_id = d.occupation_id
         WHERE publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
         AND (NOW() - INTERVAL {start_day} DAY)
         AND occupation_field IN ({name_string})
         GROUP BY d.occupation
-        ORDER BY ad_count DESC
+        ORDER BY total_vacancies DESC
         LIMIT 5;
 
     """
@@ -125,10 +128,6 @@ def get_top_5_least_experience_occupations() -> pd.DataFrame:
     query = f"""
         SELECT 
             occupation,
-            ROUND(
-                100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),
-                2
-            ) AS experience_percentage,
             SUM(vacancies) AS total_vacancies
         FROM marts.occupation_trends_over_time
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
