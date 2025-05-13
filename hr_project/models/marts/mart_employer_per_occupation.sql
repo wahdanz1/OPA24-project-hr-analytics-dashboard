@@ -4,4 +4,5 @@ SELECT
     employer_name,
     occupation_field, 
     total_vacancies,
+    publication_date
 FROM int_ads_per_employer_occupation 
