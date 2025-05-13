@@ -27,13 +27,25 @@ def display_kpis():
     with col2:
         experience_percentage = get_experience_percentage()
         st.metric(label="Experience Required (%)", value=f"{experience_percentage} %")
+    with col3:
+        pass
+        
+        
 
         
 
+    display_dataframes()
 
-    top_occupations = get_top_occupations()
-    st.subheader("Top 5 Occupations")
-    st.dataframe(top_occupations, use_container_width=True)
+def display_dataframes():
+    col1,col2 = st.columns(2)
+    with col1:
+        top_occupations = get_top_occupations()
+        st.subheader("Top 5 Occupations")
+        st.dataframe(top_occupations, use_container_width=True)
+    with col2:
+        st.subheader("Jobs with below 25% experience required")
+        least_experience_occupation_df = get_top_5_least_experience_occupations()
+        st.dataframe(least_experience_occupation_df, use_container_width=True)
     # Display the top 5 occupations
 
 
@@ -90,24 +102,53 @@ def get_experience_percentage() -> float:
     # Query directly from the mart
     query = f"""
         SELECT 
-            ROUND(
-                100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),
-                2
-            ) AS percent_with_experience_required
+        ROUND(100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),2) AS percent_with_experience_required
         FROM marts.mart_occupation_trends_over_time
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
                                    AND (NOW() - INTERVAL '{start_day} day')
-          AND occupation_field IN ({name_string});
+        AND occupation_field IN ({name_string});
     """
-
-    print("📄 Final SQL query:")
-    print(query)
-
     result = fetch_data_from_db(query)
 
     if result.empty or result.iloc[0, 0] is None:
+        print("No data found for the given filters.")
         return 0.0
     return float(result.iloc[0, 0])
+
+def get_top_5_least_experience_occupations() -> pd.DataFrame:
+    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+
+    # Format occupation_field list for SQL
+    if isinstance(name_string, list):
+        name_string = ', '.join(f"'{name}'" for name in name_string)
+
+    query = f"""
+        SELECT 
+            occupation,
+            ROUND(
+                100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),
+                2
+            ) AS experience_percentage,
+            SUM(vacancies) AS total_vacancies
+        FROM marts.occupation_trends_over_time
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+                                   AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string})
+        GROUP BY occupation
+        HAVING ROUND(
+            100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),
+            2
+        ) < 25
+        ORDER BY total_vacancies DESC
+        LIMIT 5;
+    """
+
+    result = fetch_data_from_db(query)
+
+    if result.empty:
+        return pd.DataFrame(columns=["occupation", "experience_percentage", "total_vacancies"])
+
+    return result
 
 
 
