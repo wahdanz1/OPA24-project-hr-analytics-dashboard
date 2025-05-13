@@ -47,7 +47,7 @@ def display_dataframes():
 
         
         avg_vacancy_df = average_vacancies_per_job_ad()
-        st.subheader("Employers with Highest Avg. Vacancies per Job Ad")
+        st.subheader("Employers with Highest Avg. Vacancies per Ad")
         st.dataframe(avg_vacancy_df, use_container_width=True,hide_index=True)
 
 
@@ -55,7 +55,10 @@ def display_dataframes():
         st.subheader("Jobs requiring little to no experience")
         least_experience_occupation_df = get_top_5_least_experience_occupations()
         st.dataframe(least_experience_occupation_df, use_container_width=True,hide_index=True)
-    # Display the top 5 occupations
+
+        st.subheader("Occupations with Most Unique Employers")
+        top_unique_employer_occupations = get_top_5_occupations_by_unique_employers()
+        st.dataframe(top_unique_employer_occupations, use_container_width=True, hide_index=True)
 
 
 
@@ -140,6 +143,25 @@ def get_occupation_with_most_unique_employers() -> str:
     count = df.iloc[0]["unique_employer_count"]
     return f"{occ} ({count} employers)"
 
+def get_top_5_occupations_by_unique_employers() -> pd.DataFrame:
+    name_string, _, start_day, end_day = get_sidebar_filters()
+
+    query = f"""
+        SELECT 
+            occupation,
+            COUNT(DISTINCT employer_name) AS unique_employer_count
+        FROM marts.mart_summary
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+          AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string})
+          AND employer_name IS NOT NULL
+        GROUP BY occupation
+        ORDER BY unique_employer_count DESC
+        LIMIT 5;
+    """
+
+    df = fetch_data_from_db(query)
+    return df if not df.empty else pd.DataFrame(columns=["occupation", "unique_employer_count"])
 
 def get_top_occupations():
     name_string, _, start_day, end_day = get_sidebar_filters()
