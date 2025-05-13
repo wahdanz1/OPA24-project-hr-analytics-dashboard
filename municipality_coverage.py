@@ -18,7 +18,7 @@ def top_occupations_per_municipality():
 
     region_query = """
                     SELECT DISTINCT workplace_region
-                    FROM marts.mart_top_occupations_per_municipality
+                    FROM marts.mart_top_occupations_dynamic
                     WHERE workplace_region IS NOT NULL
                     ORDER BY workplace_region
                     """
