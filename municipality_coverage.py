@@ -43,7 +43,7 @@ def top_occupations_per_municipality():
                 workplace_region,
                 SUM(total_vacancies) AS total_vacancies
             FROM marts.mart_top_occupations_dynamic
-            WHERE occupation_field IN ('Hälso- och sjukvård')
+            WHERE occupation_field IN ({name_string})
             AND workplace_region = '{selected_region}'
             AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
                                     AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
@@ -59,7 +59,7 @@ def top_occupations_per_municipality():
         FROM filtered_data
         WHERE total_vacancies IS NOT NULL
         QUALIFY rank <= 3
-        ORDER BY total_vacancies ASC
+        ORDER BY total_vacancies DESC
     """
     data1 = fetch_data_from_db(query1)
 
@@ -70,23 +70,22 @@ def top_occupations_per_municipality():
         # selected region has a lot of municipalities which would cause the chart
         # to be too wide
 
-        # Sort by municipality and rank to ensure the order of the bars in the bar chart
-        data1 = data1.sort_values(by=["workplace_municipality", "rank"])
-
-        # Reverse order for the rank
-        data1["rank"] = 4 - data1["rank"]  # If rank is 1, score is 3; rank 2 → 2; rank 3 → 1
+        # Reverse order for the rank to have rank 1 be the tallest bar
+        data1["rank_score"] = 4 - data1["rank"]  # If rank is 1, score is 3; rank 2 → 2; rank 3 → 1
 
         fig1 = create_vertical_bar_chart(
             data1,
             x_value="workplace_municipality",
             x_label="Municipality",
-            y_value="rank",
+            y_value="rank_score",
             y_label="Vacancies per occupation",
             title=f"Top Occupations per Municipality (in {selected_region})",
             color_column="occupation",
             hover_data={"total_vacancies": True,
-                        "rank": False,
+                        "rank_score": False,
                         "workplace_municipality": False},
+            text="total_vacancies",
+            showticklabels=False,
             )
         st.plotly_chart(fig1, use_container_width=True)
 
