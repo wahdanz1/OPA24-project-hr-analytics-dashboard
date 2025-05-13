@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(page_title="HR Dashboard", layout="wide")
 
-current_page = st.session_state.get("page_selection", "Summary")
+# CSS to set the sidebar width
 st.markdown(
     """
     <style>
@@ -42,7 +42,7 @@ with st.sidebar:
         key="occupation_field_choice",
     )
 
-    if current_page != "Summary":
+    if page_selection != "Summary" and page_selection != "Municipality Coverage":
         # Result limit slider with key
         limit = st.select_slider(
             label="Results to show:",
