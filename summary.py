@@ -7,6 +7,8 @@ def summary_page():
 
     occupation_fields = get_selected_occupation_fields()
     st.markdown(f"**Selected Occupation Fields:**  {occupation_fields}")
+    
+    
     display_kpis()
 
 
@@ -16,9 +18,19 @@ def summary_page():
 
 
 def display_kpis():
-    
-    selected_posted = get_jobs_posted_selected_period()
-    st.metric(label="Jobs Posted in Selected Period", value=selected_posted, delta=None)
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        selected_posted = get_jobs_posted_selected_period()
+        st.metric(label="Jobs Posted within selected parameters", value=selected_posted)
+
+    with col2:
+        experience_percentage = get_experience_percentage()
+        st.metric(label="Experience Required (%)", value=f"{experience_percentage} %")
+
+        
+
+
     top_occupations = get_top_occupations()
     st.subheader("Top 5 Occupations")
     st.dataframe(top_occupations, use_container_width=True)
@@ -56,7 +68,6 @@ def get_top_occupations():
         SELECT d.occupation, COUNT(*) AS ad_count
         FROM refined.fct_job_ads f
         JOIN refined.dim_occupation d ON f.occupation_id = d.occupation_id
-
         WHERE publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
         AND (NOW() - INTERVAL {start_day} DAY)
         AND occupation_field IN ({name_string})
@@ -67,6 +78,37 @@ def get_top_occupations():
     """
     df = fetch_data_from_db(query)
     return df
+
+def get_experience_percentage() -> float:
+    # Get the sidebar filters
+    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+
+    # Format occupation_field list for SQL
+    if isinstance(name_string, list):
+        name_string = ', '.join(f"'{name}'" for name in name_string)
+
+    # Query directly from the mart
+    query = f"""
+        SELECT 
+            ROUND(
+                100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),
+                2
+            ) AS percent_with_experience_required
+        FROM marts.mart_occupation_trends_over_time
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+                                   AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string});
+    """
+
+    print("📄 Final SQL query:")
+    print(query)
+
+    result = fetch_data_from_db(query)
+
+    if result.empty or result.iloc[0, 0] is None:
+        return 0.0
+    return float(result.iloc[0, 0])
+
 
 
 
