@@ -65,41 +65,36 @@ def everything_test():
     line_data = fetch_data_from_db(line_query)
 
 
-    # Create two columns for the bar and line charts
-    col1, col2 = st.columns([1,1])
 
 
-    with col1:
-        # Check if the data is empty before plotting   
-        if not bar_data.empty:
-
-            # Create a bar chart using Plotly
-            bar_fig = create_horizontal_bar_chart(
-                data=bar_data,
-                x_value="job_count",
-                y_value="occupation",
-                title="Job Openings in the past",
-                x_label="Job Openings",
-                y_label="Job Openings",
-                color_column="occupation",
-                margin=dict(l=50, r=50, t=50, b=40)
-            )
+    # Check if the data is empty before plotting   
+    if not bar_data.empty:
+        # Create a bar chart using Plotly
+        bar_fig = create_horizontal_bar_chart(
+            data=bar_data,
+            x_value="job_count",
+            y_value="occupation",
+            title="Job openings for selected period",
+            x_label="Job Openings",
+            y_label="Job Openings",
+            color_column="occupation",
+            margin=dict(l=50, r=50, t=50, b=40)
+        )
 
 
-            st.plotly_chart(bar_fig, use_container_width=True)
-    # If the data is not empty, create a line chart using Plotly
-    with col2:
-        # Check if the data is empty before plotting    
-        if not line_data.empty:
-            line_fig = create_line_chart(
-                data=line_data,
-                x_value="week",
-                y_value="distinct_occupations",
-                x_label="Date",
-                y_label="Job Openings",
-                title="Job Openings Over Time",
-                color_column="occupation",
-            )
+        st.plotly_chart(bar_fig, use_container_width=True)
 
-            st.plotly_chart(line_fig, use_container_width=True)
+    # Check if the data is empty before plotting    
+    if not line_data.empty:
+        line_fig = create_line_chart(
+            data=line_data,
+            x_value="week",
+            y_value="distinct_occupations",
+            x_label="Date",
+            y_label="Job Openings",
+            title="Job Openings Over Time",
+            color_column="occupation",
+        )
+
+        st.plotly_chart(line_fig, use_container_width=True)
 
