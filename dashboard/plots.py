@@ -23,7 +23,6 @@ def create_horizontal_bar_chart(data,**kwargs):
         },
         title=title,
         color=color_column,
-        
         **kwargs
     )
 
@@ -52,6 +51,7 @@ def create_vertical_bar_chart(data,**kwargs):
     title = kwargs.pop("title", "")
     color_column = kwargs.pop("color_column", "")
     margin = kwargs.pop("margin", dict(l=50, r=50, t=50, b=40))
+    showticklabels = kwargs.pop("showticklabels", True)
 
     fig = px.bar(
         data,
@@ -63,19 +63,17 @@ def create_vertical_bar_chart(data,**kwargs):
         },
         title=title,
         color=color_column,
-        barmode="group",
+        barmode="stack",
         **kwargs
     )
 
     fig.update_layout(
-        height=max(300, len(data[x_value].unique()) * 40),
         margin=margin,
-        yaxis_title=None,
-        xaxis_tickangle=-45,
         title_x=0.0,
     )
 
     fig.update_yaxes(
+        showticklabels=showticklabels,
         autorange=True,
         )
 
