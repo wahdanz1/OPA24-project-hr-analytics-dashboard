@@ -30,10 +30,6 @@ def display_kpis():
     with col3:
         pass
         
-        
-
-        
-
     display_dataframes()
 
 def display_dataframes():
@@ -44,11 +40,18 @@ def display_dataframes():
     with col1:
         top_occupations = get_top_occupations()
         st.subheader("Top 5 Occupations")
-        st.dataframe(top_occupations, use_container_width=True)
+        st.dataframe(top_occupations, use_container_width=True,hide_index=True)
+
+        
+        avg_vacancy_df = average_vacancies_per_job_ad()
+        st.subheader("Employers with Highest Avg. Vacancies per Job Ad")
+        st.dataframe(avg_vacancy_df, use_container_width=True,hide_index=True)
+
+
     with col2:
         st.subheader("Jobs requiring little to no experience")
         least_experience_occupation_df = get_top_5_least_experience_occupations()
-        st.dataframe(least_experience_occupation_df, use_container_width=True)
+        st.dataframe(least_experience_occupation_df, use_container_width=True,hide_index=True)
     # Display the top 5 occupations
 
 
@@ -59,79 +62,85 @@ def display_dataframes():
 
 # Returns the number of jobs posted in the selected period
 def get_jobs_posted_selected_period():
-    # Get the sidebar filters
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
-
-    # Query to get the number of jobs posted in the selected period
+    name_string, _, start_day, end_day = get_sidebar_filters()
     query = f"""
         SELECT COUNT(*) AS jobs_posted
-        FROM marts.mart_occupation_trends_over_time
+        FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
-            AND (NOW() - INTERVAL {start_day} DAY)
-            AND occupation_field IN ({name_string})
+          AND (NOW() - INTERVAL {start_day} DAY)
+          AND occupation_field IN ({name_string})
     """
     df = fetch_data_from_db(query)
     return df['jobs_posted'].values[0]
 
 
-def get_top_occupations():
-    # Get the sidebar filters
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+def get_experience_percentage() -> float:
+    name_string, _, start_day, end_day = get_sidebar_filters()
 
-    # Query to get the top occupations
     query = f"""
-        SELECT d.occupation, SUM(vacancies) AS total_vacancies
-        FROM refined.fct_job_ads f
-        JOIN refined.dim_occupation d ON f.occupation_id = d.occupation_id
-        WHERE publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
-        AND (NOW() - INTERVAL {start_day} DAY)
-        AND occupation_field IN ({name_string})
-        GROUP BY d.occupation
-        ORDER BY total_vacancies DESC
-        LIMIT 5;
+        SELECT 
+            ROUND(100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0), 2)
+            AS percent_with_experience_required
+        FROM marts.mart_summary
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+          AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string});
+    """
+    result = fetch_data_from_db(query)
+    return float(result.iloc[0, 0]) if not result.empty and result.iloc[0, 0] is not None else 0.0
 
+
+def average_vacancies_per_job_ad():
+    name_string, _, start_day, end_day = get_sidebar_filters()
+
+    query = f"""
+        SELECT 
+            employer_name,
+            ROUND(AVG(NULLIF(vacancies, 0)), 2) AS avg_vacancies_per_job_ad,
+            COUNT(*) AS total_ads
+        FROM marts.mart_summary
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+          AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string})
+          AND employer_name IS NOT NULL
+          AND vacancies BETWEEN 1 AND 50
+        GROUP BY employer_name
+        HAVING COUNT(*) >= 3
+        ORDER BY avg_vacancies_per_job_ad DESC
+        LIMIT 5;
     """
     df = fetch_data_from_db(query)
     return df
 
-def get_experience_percentage() -> float:
-    # Get the sidebar filters
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
 
-    # Format occupation_field list for SQL
-    if isinstance(name_string, list):
-        name_string = ', '.join(f"'{name}'" for name in name_string)
 
-    # Query directly from the mart
+def get_top_occupations():
+    name_string, _, start_day, end_day = get_sidebar_filters()
+
     query = f"""
-        SELECT 
-        ROUND(100.0 * COUNT(*) FILTER (WHERE experience_required = TRUE) / NULLIF(COUNT(*), 0),2) AS percent_with_experience_required
-        FROM marts.mart_occupation_trends_over_time
+        SELECT occupation, SUM(vacancies) AS total_vacancies
+        FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
-                                   AND (NOW() - INTERVAL '{start_day} day')
-        AND occupation_field IN ({name_string});
+          AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string})
+        GROUP BY occupation
+        ORDER BY total_vacancies DESC
+        LIMIT 5;
     """
-    result = fetch_data_from_db(query)
+    df = fetch_data_from_db(query)
+    return df
 
-    if result.empty or result.iloc[0, 0] is None:
-        print("No data found for the given filters.")
-        return 0.0
-    return float(result.iloc[0, 0])
 
 def get_top_5_least_experience_occupations() -> pd.DataFrame:
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
-
-    # Format occupation_field list for SQL
-    if isinstance(name_string, list):
-        name_string = ', '.join(f"'{name}'" for name in name_string)
+    name_string, _, start_day, end_day = get_sidebar_filters()
 
     query = f"""
         SELECT 
             occupation,
             SUM(vacancies) AS total_vacancies
-        FROM marts.occupation_trends_over_time
+        FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
-                                   AND (NOW() - INTERVAL '{start_day} day')
+          AND (NOW() - INTERVAL '{start_day} day')
           AND occupation_field IN ({name_string})
         GROUP BY occupation
         HAVING ROUND(
@@ -141,14 +150,8 @@ def get_top_5_least_experience_occupations() -> pd.DataFrame:
         ORDER BY total_vacancies DESC
         LIMIT 5;
     """
-
     result = fetch_data_from_db(query)
-
-    if result.empty:
-        return pd.DataFrame(columns=["occupation", "experience_percentage", "total_vacancies"])
-
-    return result
-
+    return result if not result.empty else pd.DataFrame(columns=["occupation", "total_vacancies"])
 
 
 
