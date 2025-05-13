@@ -18,6 +18,8 @@ def summary_page():
 
 
 def display_kpis():
+    occupation_employers = get_occupation_with_most_unique_employers()
+    st.metric(label="Occupation with Most Unique Employers", value=occupation_employers)
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -26,9 +28,10 @@ def display_kpis():
 
     with col2:
         experience_percentage = get_experience_percentage()
-        st.metric(label="Experience Required (%)", value=f"{experience_percentage} %")
+        st.metric(label="Percentage of jobs requiring experience", value=f"{experience_percentage} %")
     with col3:
         pass
+
         
     display_dataframes()
 
@@ -112,6 +115,30 @@ def average_vacancies_per_job_ad():
     df = fetch_data_from_db(query)
     return df
 
+def get_occupation_with_most_unique_employers() -> str:
+    name_string, _, start_day, end_day = get_sidebar_filters()
+
+    query = f"""
+        SELECT 
+            occupation,
+            COUNT(DISTINCT employer_name) AS unique_employer_count
+        FROM marts.mart_summary
+        WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
+          AND (NOW() - INTERVAL '{start_day} day')
+          AND occupation_field IN ({name_string})
+          AND employer_name IS NOT NULL
+        GROUP BY occupation
+        ORDER BY unique_employer_count DESC
+        LIMIT 1;
+    """
+
+    df = fetch_data_from_db(query)
+    if df.empty:
+        return "No data"
+
+    occ = df.iloc[0]["occupation"]
+    count = df.iloc[0]["unique_employer_count"]
+    return f"{occ} ({count} employers)"
 
 
 def get_top_occupations():
