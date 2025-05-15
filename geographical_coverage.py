@@ -78,7 +78,7 @@ def top_occupations_per_municipality():
             x_value="workplace_municipality",
             x_label="Municipality",
             y_value="rank_score",
-            y_label="Vacancies per occupation",
+            y_label="Vacancies per Occupation",
             title=f"Top Occupations per Municipality (in {selected_region})",
             color_column="occupation",
             hover_data={"total_vacancies": True,
@@ -89,6 +89,6 @@ def top_occupations_per_municipality():
             )
         st.plotly_chart(fig1, use_container_width=True)
 
-        with st.expander("SQL Code", expanded=False):
+        with st.expander("SQL Query", expanded=False):
             st.markdown("This is the SQL code used to generate the graph:")
             st.code(query1, language="sql")

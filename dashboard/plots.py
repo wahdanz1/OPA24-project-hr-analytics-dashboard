@@ -52,6 +52,8 @@ def create_vertical_bar_chart(data,**kwargs):
     color_column = kwargs.pop("color_column", "")
     margin = kwargs.pop("margin", dict(l=50, r=50, t=50, b=40))
     showticklabels = kwargs.pop("showticklabels", True)
+    barmode = kwargs.pop("barmode", "stack")
+    textangle = kwargs.pop("textangle", 0)
 
     fig = px.bar(
         data,
@@ -63,7 +65,7 @@ def create_vertical_bar_chart(data,**kwargs):
         },
         title=title,
         color=color_column,
-        barmode="stack",
+        barmode=barmode,
         **kwargs
     )
 
@@ -76,6 +78,10 @@ def create_vertical_bar_chart(data,**kwargs):
         showticklabels=showticklabels,
         autorange=True,
         )
+    
+    fig.update_traces(
+        textangle = textangle,
+    )
 
     return fig
 
