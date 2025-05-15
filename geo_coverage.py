@@ -71,7 +71,7 @@ def top_occupations_per_municipality():
 
         # Reverse order for the rank to have rank 1 be the tallest bar
         data1["rank_score"] = 4 - data1["rank"]  # If rank is 1, score is 3; rank 2 → 2; rank 3 → 1
-
+        data1 = data1.head(20)
         fig1 = create_vertical_bar_chart(
             data1,
             x_value="workplace_municipality",
