@@ -33,39 +33,63 @@ def employer_per_occupation():
         # Main bar chart
         fig1 = create_vertical_bar_chart(
             data1,
-            x_value="employer_name",
+            x_value="occupation",
             y_value="total_vacancies",
             y_label="Total vacancies",
-            title=f"Top employer per {name_string}",
-            color_column="occupation",
+            title=f"Top occupation per occupation field",
+            color_column="occupation_field",
         )
         st.plotly_chart(fig1, use_container_width=True)
 
         st.divider()
 
-        selectbox_key = f"selected_employer_{name_string}"
+        selectbox_key = f"selected_occupation_{name_string}"
 
         # Ensure available employers
-        employers = data1['employer_name'].unique().tolist()
+        occupations = data1['occupation'].unique().tolist()
 
-        # Initialize state if invalid or missing
-        if selectbox_key not in st.session_state or st.session_state[selectbox_key] not in employers:
-            st.session_state[selectbox_key] = employers[0] if employers else None
+        if (selectbox_key not in st.session_state or not isinstance(st.session_state[selectbox_key], list) or 
+            not all(e in occupations for e in st.session_state[selectbox_key]) 
+            ):
+            # Default to all employers selected if any exist, or empty list
+            st.session_state[selectbox_key] = []
 
-        # Selectbox auto binds to the dynamic key (per occupation filter)
-        selected_employer = st.selectbox(
-            "Select an employer to explore details",
-            employers,
-            index=employers.index(st.session_state[selectbox_key]),
-            key=selectbox_key
+        # Multiselect auto binds to the dynamic key (per occupation filter)
+        selected_occupations = st.multiselect(
+        "Select one or more occupation to explore details",
+        occupations,
+        default=st.session_state[selectbox_key],
+        key=selectbox_key
         )
 
         # Filter the data
-        employer_data = data1[data1['employer_name'] == selected_employer]
+        employer_data = data1[data1['occupation'].isin(selected_occupations)]
 
-        with st.expander(f"📊 More insights about {selected_employer}"):
-            st.metric("Total Vacancies", int(employer_data['total_vacancies'].sum()))
-            st.bar_chart(employer_data.set_index('occupation')['total_vacancies'])
+        
+        with st.expander(f"📊 More insights about selected occupation"):
+            total_vacancies = employer_data['total_vacancies'].sum()
+            num_employers = employer_data['employer_name'].nunique()
 
-    else:
-        st.warning("No data found for the selected filters.")
+            st.metric("Total Vacancies", int(total_vacancies))
+            st.metric("Number of Employers", num_employers)
+
+                # Employers list
+            st.write("### Employers Included:")
+            employers_list = employer_data['employer_name'].unique().tolist()
+            for employer in employers_list:
+                st.write(f"- {employer}")
+
+    
+            # Use your custom chart function
+            fig = create_vertical_bar_chart(
+                                            employer_data,
+                                            x_value='employer_name',
+                                            y_value='total_vacancies',
+                                            x_label='Employer',
+                                            y_label='Vacancies',
+                                            title=f"Vacancies by Occupation for selected employer",
+                                            color_column='occupation'
+                                             )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    st.divider()
