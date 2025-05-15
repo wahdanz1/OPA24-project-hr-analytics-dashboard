@@ -24,8 +24,8 @@ with st.sidebar:
         (
             "Summary", # Main page
             "Occupation Trends",
-            "Municipality Coverage",
-            "Top Employers",
+            "Geographical Coverage",
+            "Top Occupations & Employers",
         ),
         key="page_selection",
     )
@@ -42,7 +42,7 @@ with st.sidebar:
         key="occupation_field_choice",
     )
 
-    if page_selection != "Summary" and page_selection != "Municipality Coverage":
+    if page_selection != "Summary" and page_selection != "Geographical Coverage":
         # Result limit slider with key
         limit = st.select_slider(
             label="Results to show:",
@@ -54,15 +54,14 @@ with st.sidebar:
     # Interval range slider with key
     start_day, end_day = st.select_slider(
         "Interval (in days):",
-        options=[x for x in range(1, 181)],
-        value=(1, 180),
+        options=[x for x in range(1, 61)],
+        value=(1, 60),
         key="sidebar_interval"
     )
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
     import summary as sm
-    current_page = st.session_state.get("page_selection", "Summary")
     sm.summary_page()
     
 
@@ -70,21 +69,18 @@ if page_selection == "Summary":
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     import occupation_trends as ot
-    current_page = st.session_state.get("page_selection", "Occupation Trends")
     ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Municipality Coverage
-elif page_selection == "Municipality Coverage":
+elif page_selection == "Geographical Coverage":
     import municipality_coverage as mc
-    current_page = st.session_state.get("page_selection", "Municipality Coverage")
     mc.municipality_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
-elif page_selection == "Top Employers":
+elif page_selection == "Top Occupations & Employers":
     import top_employers as te
-    current_page = st.session_state.get("page_selection", "Top Employers")
     te.top_employers_page()
 
 # --------------------------------------------------------
