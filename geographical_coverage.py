@@ -1,10 +1,9 @@
 import streamlit as st
-import pandas as pd
 from dashboard.utils import fetch_data_from_db, get_sidebar_filters
-from dashboard.plots import create_horizontal_bar_chart, create_vertical_bar_chart
+from dashboard.plots import create_vertical_bar_chart
 
-def municipality_coverage_page():
-    st.header("Municipality Coverage", divider=True)
+def geographical_coverage_page():
+    st.header("Geographical Coverage", divider=True)
     st.markdown("This page provides insights into the coverage of job ads across different municipalities.")
     top_occupations_per_municipality()
     # st.divider()
