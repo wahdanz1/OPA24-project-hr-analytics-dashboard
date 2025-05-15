@@ -83,7 +83,6 @@ def top_occupations_per_municipality():
             hover_data={"total_vacancies": True,
                         "rank_score": False,
                         "workplace_municipality": False},
-            text="total_vacancies",
             showticklabels=False,
             )
         st.plotly_chart(fig1, use_container_width=True)

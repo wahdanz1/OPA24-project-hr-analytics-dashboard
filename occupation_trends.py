@@ -76,7 +76,7 @@ def everything_test():
             y_value="occupation",
             title="Job openings for selected period",
             x_label="Job Openings",
-            y_label="Job Openings",
+            y_label="Occupation",
             color_column="occupation",
             margin=dict(l=50, r=50, t=50, b=40)
         )

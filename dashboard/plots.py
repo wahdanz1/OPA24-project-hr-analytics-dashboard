@@ -54,6 +54,7 @@ def create_vertical_bar_chart(data,**kwargs):
     showticklabels = kwargs.pop("showticklabels", True)
     barmode = kwargs.pop("barmode", "stack")
     textangle = kwargs.pop("textangle", 0)
+    hover_template = kwargs.pop("hover_template", "")
 
     fig = px.bar(
         data,
@@ -76,17 +77,18 @@ def create_vertical_bar_chart(data,**kwargs):
 
     fig.update_yaxes(
         showticklabels=showticklabels,
-        autorange=True,
+        # autorange=True,
         )
     
     fig.update_traces(
+        text=data[y_value],
         textangle = textangle,
     )
 
     return fig
 
 # Create a line chart using Plotly
-def create_line_chart(data ,**kwargs):
+def create_line_chart(data,**kwargs):
     x_value = kwargs.pop("x_value", "")
     y_value = kwargs.pop("y_value", "")
     x_label = kwargs.pop("x_label", "")
@@ -102,10 +104,10 @@ def create_line_chart(data ,**kwargs):
         labels={
             x_value: x_label,
             y_value: y_label
-
         },
         title=title,
         color=color_column,
+        **kwargs
     )
 
     return fig
