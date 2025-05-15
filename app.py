@@ -72,10 +72,10 @@ elif page_selection == "Occupation Trends":
     ot.occupation_trends_page()
 
 # --------------------------------------------------------
-# Page 3: Municipality Coverage
+# Page 3: Geographical Coverage
 elif page_selection == "Geographical Coverage":
-    import municipality_coverage as mc
-    mc.municipality_coverage_page()
+    import geographical_coverage as gc
+    gc.geographical_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
