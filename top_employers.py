@@ -4,92 +4,113 @@ from dashboard.plots import create_vertical_bar_chart
 
 
 def top_employers_page():
-    st.header("Top Employers per Occupation", divider=True)
-    employer_per_occupation()
+    st.header("Top Occupations per Occupation Field", divider=True)
+    top_occupation_per_field()
+    st.divider()
 
-
-def employer_per_occupation():
+def top_occupation_per_field():
     # Get filters from sidebar
     name_string, limit_value, start_day, end_day = get_sidebar_filters()
 
     # Main top employers query
     query1 = f"""
-        SELECT occupation, 
-               employer_name, 
-               occupation_field, 
-               total_vacancies
-        FROM marts.mart_employer_per_occupation
-        WHERE occupation_field IN ({name_string})
-          AND publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
-          AND (NOW() - INTERVAL {start_day} DAY)
-        GROUP BY occupation, employer_name, occupation_field, total_vacancies
-        ORDER BY total_vacancies DESC 
+        WITH filtered_data AS (
+            SELECT
+                occupation,
+                occupation_field,
+                SUM(total_vacancies) AS total_vacancies
+            FROM marts.mart_top_employers_dynamic
+            WHERE occupation_field IN ({name_string})
+            AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
+                                    AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
+            GROUP BY occupation, occupation_field
+        )
+
+        SELECT
+            *
+        FROM filtered_data
+        WHERE total_vacancies IS NOT NULL
+        ORDER BY total_vacancies DESC
         LIMIT {limit_value}
     """
-    st.code(query1, language="sql")
+
     data1 = fetch_data_from_db(query1)
 
     if not data1.empty:
         # Main bar chart
         fig1 = create_vertical_bar_chart(
             data1,
-            x_value="occupation",
+            x_value="occupation_field",
+            x_label="Occupation Field",
             y_value="total_vacancies",
-            y_label="Total vacancies",
-            title=f"Top occupation per occupation field",
-            color_column="occupation_field",
+            y_label="Vacancies per Occupation",
+            title=f"Top occupations per Occupation Field",
+            color_column="occupation",
+            hover_data={"total_vacancies": True,
+                        "occupation": True,
+                        "occupation_field": False},
+            text="total_vacancies",
+            barmode="group",
         )
         st.plotly_chart(fig1, use_container_width=True)
 
-        st.divider()
+    # ---------- Top employers per occupation ----------
+    # Generate list of available occupations
+    occupation_options = data1['occupation'].unique().tolist()
+    
+    # Region selection for the graph
+    selected_occupations = st.multiselect(
+        "Select one or more occupation to explore details:",
+        options=occupation_options,
+        key="occupation_selectbox",
+    )
 
-        selectbox_key = f"selected_occupation_{name_string}"
+    # Get employer data
+    employer_query = f"""
+        SELECT
+            *
+        FROM marts.mart_top_employers
+    """
+    employer_data = fetch_data_from_db(employer_query)
+    
+    # Filter the employer data based on selected occupation(s)
+    filtered_employer_data = employer_data[employer_data['occupation'].isin(selected_occupations)]
+    
+    # More insights section
+    occupation_selection = st.session_state.get("occupation_selectbox")
+    if occupation_selection:
+        col1, col2, col3 = st.columns(3)
 
-        # Ensure available employers
-        occupations = data1['occupation'].unique().tolist()
-
-        if (selectbox_key not in st.session_state or not isinstance(st.session_state[selectbox_key], list) or 
-            not all(e in occupations for e in st.session_state[selectbox_key]) 
-            ):
-            # Default to all employers selected if any exist, or empty list
-            st.session_state[selectbox_key] = []
-
-        # Multiselect auto binds to the dynamic key (per occupation filter)
-        selected_occupations = st.multiselect(
-        "Select one or more occupation to explore details",
-        occupations,
-        default=st.session_state[selectbox_key],
-        key=selectbox_key
-        )
-
-        # Filter the data
-        employer_data = data1[data1['occupation'].isin(selected_occupations)]
-
-        
-        with st.expander(f"📊 More insights about selected occupation"):
-            total_vacancies = employer_data['total_vacancies'].sum()
-            num_employers = employer_data['employer_name'].nunique()
-
+        # Total vacancies
+        with col1:
+            total_vacancies = filtered_employer_data['total_vacancies'].sum()
             st.metric("Total Vacancies", int(total_vacancies))
+
+        # Number of employers
+        with col2:
+            num_employers = filtered_employer_data['employer_name'].nunique()
             st.metric("Number of Employers", num_employers)
 
-                # Employers list
-            st.write("### Employers Included:")
-            employers_list = employer_data['employer_name'].unique().tolist()
-            for employer in employers_list:
-                st.write(f"- {employer}")
+        # Top 5 employers
+        with col3:
+            st.write("### Något kul här kanske?")
+    
+        # Limit by top 10 before plotting to ensure reasonable chart width
+        limited_employer_data = filtered_employer_data.head(10)
 
-    
-            # Use your custom chart function
-            fig = create_vertical_bar_chart(
-                                            employer_data,
-                                            x_value='employer_name',
-                                            y_value='total_vacancies',
-                                            x_label='Employer',
-                                            y_label='Vacancies',
-                                            title=f"Vacancies by Occupation for selected employer",
-                                            color_column='occupation'
-                                             )
-    
-    st.plotly_chart(fig, use_container_width=True)
-    st.divider()
+        # Use your custom chart function
+        fig = create_vertical_bar_chart(
+            limited_employer_data,
+            x_value='employer_name',
+            x_label='Employer',
+            y_value='total_vacancies',
+            y_label='Vacancies',
+            title=f"Top employers per region for selected occupation(s)",
+            color_column='workplace_region',
+            hover_data={"total_vacancies": True,
+                        "employer_name": False,
+                        "workplace_region": True},
+            text="total_vacancies",
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
