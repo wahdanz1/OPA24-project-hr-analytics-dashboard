@@ -74,7 +74,7 @@ elif page_selection == "Occupation Trends":
 # --------------------------------------------------------
 # Page 3: Geographical Coverage
 elif page_selection == "Geographical Coverage":
-    import geographical_coverage as gc
+    import geo_coverage as gc
     gc.geographical_coverage_page()
 
 # --------------------------------------------------------
