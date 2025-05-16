@@ -84,6 +84,7 @@ def top_occupations_per_municipality():
                         "rank_score": False,
                         "workplace_municipality": False},
             showticklabels=False,
+            text="total_vacancies",
             )
         st.plotly_chart(fig1, use_container_width=True)
 

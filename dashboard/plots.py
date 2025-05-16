@@ -81,7 +81,6 @@ def create_vertical_bar_chart(data,**kwargs):
         )
     
     fig.update_traces(
-        text=data[y_value],
         textangle = textangle,
     )
 
