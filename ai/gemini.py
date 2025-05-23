@@ -1,4 +1,8 @@
 from dotenv import load_dotenv
+from gemini_database_acess import get_database_instructions
+from gemini_tool_instructions import get_tool_instructions
+from gemini_personality import get_statistical_consultant_personality
+from gemini_response_format import get_response_format
 import os
 import google.genai as genai    
 from pathlib import Path
@@ -21,9 +25,18 @@ class GeminiHandler:
     def get_response(self,prompt):
         response = self.client.models.generate_content(
             model=self.model,
-            contents=prompt,
+            contents=f"""
+            database instructions:{get_database_instructions()}
+            this is the tool instructions:{get_tool_instructions()}
+            this is the personality prompt:{get_statistical_consultant_personality()}
+            this is the user prompt:{prompt}
+            this is the response format:{get_response_format()}
+            """,
         )
         return response
+    
+
+
 
 
 
