@@ -23,6 +23,21 @@ class DuckDBConnection:
         except Exception as e:
             print(f"Error executing query: {e}")
             return pd.DataFrame()  # Return an empty DataFrame if there's an error
+    
+    def execute(self, query, params=None): # Execute a non-select query
+        """Execute a non-select query (e.g., CREATE TABLE, INSERT, etc.)"""
+        try:
+            if params:
+                self.conn.execute(query, params)
+            else:
+                self.conn.execute(query)
+        except Exception as e:
+            print(f"Error executing command: {e}")
+
+    def register_df(self, name: str, df: pd.DataFrame): # Register a DataFrame as a DuckDB temp table
+        """Register a DataFrame as a DuckDB temp table."""
+        self.conn.register(name, df)
+
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.conn:
