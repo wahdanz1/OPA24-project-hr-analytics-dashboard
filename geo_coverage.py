@@ -3,7 +3,7 @@ from dashboard.utils import fetch_data_from_db, get_sidebar_filters
 from dashboard.plots import create_vertical_bar_chart
 
 def geographical_coverage_page():
-    st.header("Geographical Coverage", divider=True)
+    st.header("🌍 Geographical Coverage", divider=True)
     st.markdown("This page provides insights into the coverage of job ads across different municipalities.")
     top_occupations_per_municipality()
     # st.divider()
@@ -12,13 +12,14 @@ def top_occupations_per_municipality():
     # Description for the graph
     st.markdown("This graph shows the top occupations per municipality based on total vacancies.")
 
-    # Build the string for the SQL query based on the selected occupation field
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+    # Build variables based on the sidebar filters
+    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
 
-    region_query = """
+    region_query = f"""
                     SELECT DISTINCT workplace_region
                     FROM marts.mart_top_occupations_dynamic
                     WHERE workplace_region IS NOT NULL
+                    AND occupation_field IN ({occupation_field_string})
                     ORDER BY workplace_region
                     """
     regions = fetch_data_from_db(region_query)
@@ -42,7 +43,7 @@ def top_occupations_per_municipality():
                 workplace_region,
                 SUM(total_vacancies) AS total_vacancies
             FROM marts.mart_top_occupations_dynamic
-            WHERE occupation_field IN ({name_string})
+            WHERE occupation_field IN ({occupation_field_string})
             AND workplace_region = '{selected_region}'
             AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
                                     AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
