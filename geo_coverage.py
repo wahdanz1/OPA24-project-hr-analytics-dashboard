@@ -13,25 +13,7 @@ def top_occupations_per_municipality():
     st.markdown("This graph shows the top occupations per municipality based on total vacancies.")
 
     # Build variables based on the sidebar filters
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
-
-    region_query = f"""
-                    SELECT DISTINCT workplace_region
-                    FROM marts.mart_top_occupations_dynamic
-                    WHERE workplace_region IS NOT NULL
-                    AND occupation_field IN ({occupation_field_string})
-                    ORDER BY workplace_region
-                    """
-    regions = fetch_data_from_db(region_query)
-    region_options = regions["workplace_region"].tolist()
-    
-    # Region selection for the graph
-    selected_region = st.selectbox(
-        "Select a region",
-        options=region_options,
-        index=0,
-        key="region_selectbox"
-    )
+    occupation_field_string, _, _, start_day, end_day, _, region_string = get_sidebar_filters()
 
     # Send a query to the database to get the data for the graph
     query1 = f"""
@@ -44,9 +26,9 @@ def top_occupations_per_municipality():
                 SUM(total_vacancies) AS total_vacancies
             FROM marts.mart_top_occupations_dynamic
             WHERE occupation_field IN ({occupation_field_string})
-            AND workplace_region = '{selected_region}'
-            AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
-                                    AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
+                AND workplace_region IN ({region_string})
+                AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
+                                        AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
             GROUP BY workplace_municipality, occupation, occupation_field, workplace_region
         )
 
@@ -79,7 +61,7 @@ def top_occupations_per_municipality():
             x_label="Municipality",
             y_value="rank_score",
             y_label="Vacancies per Occupation",
-            title=f"Top Occupations per Municipality (in {selected_region})",
+            title=f"Top Occupations per Municipality",
             color_column="occupation",
             hover_data={"total_vacancies": True,
                         "rank_score": False,

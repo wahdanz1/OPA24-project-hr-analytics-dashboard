@@ -8,20 +8,21 @@ def occupation_trends_page():
     st.header("📈 Occupation Trends Over Time", divider=True)
     
     # Description
-    st.markdown("This graph shows the trends in job vacancies over time.")
+    st.markdown("This graph shows the trends in job openings over time.")
 
-    requires_experience = "TRUE" if st.checkbox("Requires Experience", value=False) else "FALSE"
-
-    bar_plot(requires_experience)
+    bar_plot()
     st.divider()
-    line_plot(requires_experience)
+    line_plot()
 
 # Bar chart area
-def bar_plot(requires_experience):
-    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
+def bar_plot():
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
     # Send a query to the database to get the data for the graph
     bar_query = f"""
-            SELECT COUNT(vacancies) AS job_count,occupation FROM marts.mart_occupation_trends_over_time
+            SELECT
+                COUNT(vacancies) AS job_count,
+                occupation
+            FROM marts.mart_occupation_trends_over_time
             WHERE experience_required = {requires_experience}
                 AND publication_date
                 BETWEEN (NOW() - INTERVAL {end_day} DAY)
@@ -54,9 +55,9 @@ def bar_plot(requires_experience):
         st.plotly_chart(bar_fig, use_container_width=True)
 
 # Line chart area
-def line_plot(requires_experience):
+def line_plot():
     # Get sidebar filters
-    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
     
     # Query to get job openings over time for top occupations
     line_query = f"""
