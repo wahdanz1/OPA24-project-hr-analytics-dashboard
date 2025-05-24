@@ -1,6 +1,9 @@
 import streamlit as st
 from gemini import GeminiHandler  # adjust import path if needed
-
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from dashboard.utils import fetch_data_from_db
 # Initialize the gemini handler
 gemini_handler = GeminiHandler()
 
@@ -29,10 +32,16 @@ if prompt:
 
     response = gemini_handler.get_response(prompt, st.session_state.messages)
 
+    if response["query"]:
+        df = fetch_data_from_db(response["query"])
+        csv_string = df.to_csv(index=False)
+        st.write("### Query Result")
+        st.dataframe(df)
+
 
     # Add assistant message
     st.session_state.messages.append({"role": "assistant", "content": response["response"]})
     with st.chat_message("assistant"):
         st.markdown(response["response"])
     
-    
+

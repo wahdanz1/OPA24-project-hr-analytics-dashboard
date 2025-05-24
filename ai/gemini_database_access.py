@@ -72,7 +72,7 @@ JOIN KEYS
 • fct_job_ads.job_details_id = dim_job_details.job_details_id  
 
 GENERAL RULES
-1. ALWAYS prefix tables & marts with `refined.`  
+1. ALWAYS prefix  dim tables with `refined.` and marts with `marts.`  
 2. NEVER reference src_* or int_* models.  
 3. Prefer a MART if it directly covers the user’s ask.  
 4. When writing ad-hoc SQL, JOIN fact → dim tables using the above keys.  
