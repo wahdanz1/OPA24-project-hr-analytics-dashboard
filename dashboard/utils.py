@@ -25,24 +25,39 @@ def get_sidebar_filters():
     # Occupation groups (same logic)
     occupation_group_choices = st.session_state.get("occupation_group_choices", [])
     if occupation_group_choices:
-        occupation_group_string = ", ".join(f"'{group}'" for group in occupation_group_choices)
+        occupation_groups = occupation_group_choices
     else:
-        all_groups = get_occupation_group_list()
-        occupation_group_string = ", ".join(f"'{group}'" for group in all_groups)
+        occupation_groups = get_occupation_group_list(occupation_field_choice)
+
+    occupation_group_string = ", ".join(f"'{group}'" for group in occupation_groups)
 
     # Get limit and interval values
     limit_value = st.session_state.get("sidebar_limit")
     interval_value = st.session_state.get("sidebar_interval")
     start_day, end_day = sorted(interval_value)
+    requires_experience = st.session_state.get("sidebar_requires_experience")
 
-    return occupation_field_string, occupation_group_string, limit_value, start_day, end_day
+    # Get region from session
+    region_choice_raw = st.session_state.get("sidebar_region_choice", "All regions")
+
+    if region_choice_raw == "All regions":
+        all_regions = get_region_list(
+            occupation_field=occupation_field_choice,
+            occupation_groups=occupation_groups
+        )
+        region_string = ", ".join(f"'{region}'" for region in all_regions)
+    else:
+        region_string = f"'{region_choice_raw}'"
+
+    return occupation_field_string, occupation_group_string, limit_value, start_day, end_day, requires_experience, region_string
 
 # Function to get the list of occupation fields from the database
 # Returns a list of unique occupation fields to be used in the sidebar
 st.cache_data
 def get_occupation_field_list():
     query = f"""
-        SELECT DISTINCT occupation_field
+        SELECT
+            DISTINCT occupation_field
         FROM marts.mart_summary
         WHERE occupation_field IS NOT NULL
         ORDER BY occupation_field;
@@ -55,7 +70,8 @@ def get_occupation_field_list():
 def get_occupation_group_list(occupation_field: str = "All occupation fields") -> list:
     if occupation_field == "All occupation fields":
         query = """
-            SELECT DISTINCT occupation_group
+            SELECT
+                DISTINCT occupation_group
             FROM marts.mart_summary
             WHERE occupation_group IS NOT NULL
             ORDER BY occupation_group;
@@ -63,15 +79,42 @@ def get_occupation_group_list(occupation_field: str = "All occupation fields") -
         params = None
     else:
         query = """
-            SELECT DISTINCT occupation_group
+            SELECT
+                DISTINCT occupation_group
             FROM marts.mart_summary
             WHERE occupation_group IS NOT NULL
                 AND occupation_field = ?
             ORDER BY occupation_group;
         """
         params = (occupation_field,)
+    
+    df = fetch_data_from_db(query, params)
+    return df["occupation_group"].dropna().tolist() if not df.empty else []
 
-    return fetch_data_from_db(query, params)["occupation_group"].dropna().tolist()
+# Function to get the list of regions from the database
+# Returns a list of unique regions to be used in the sidebar
+def get_region_list(
+    occupation_field: str = "All occupation fields", occupation_groups: list = None) -> list:
+    query = """
+        SELECT DISTINCT workplace_region
+        FROM marts.mart_summary
+        WHERE workplace_region IS NOT NULL
+    """
+    params = []
+
+    if occupation_field != "All occupation fields":
+        query += " AND occupation_field = ?"
+        params.append(occupation_field)
+
+    if occupation_groups and "All occupation groups" not in occupation_groups:
+        placeholders = ", ".join(["?"] * len(occupation_groups))
+        query += f" AND occupation_group IN ({placeholders})"
+        params.extend(occupation_groups)
+
+    query += " ORDER BY workplace_region ASC;"
+
+    df = fetch_data_from_db(query, params if params else None)
+    return df["workplace_region"].dropna().tolist() if not df.empty else []
 
 # Returns the selected occupation field and group(s) from the sidebar,
 # formatted for visual display (no quotes, readable format).
@@ -100,50 +143,7 @@ def get_selected_occupation_filters():
         "all_groups": all_groups,
     }
 
-def display_occupation_choices():
-    # Get the selected filters
-    filters = get_selected_occupation_filters()
-
-    # Map the correct emoji to each field
-    FIELD_EMOJIS = {
-        "Administration, ekonomi, juridik": "💼",
-        "Försäljning, inköp, marknadsföring": "💹",
-        "Hälso- och sjukvård": "🏥",
-    }
-
-    field_list = filters["field_list"]
-    group_list = filters["group_list"]
-    all_fields = filters["all_fields"]
-    all_groups = filters["all_groups"]
-
-    st.subheader("Showing data for:")
-
-    col1, col2 = st.columns([1, 1])
-
-    # --- Column 1: Occupation Field ---
-    with col1:
-        if all_fields:
-            st.markdown("**All fields**")
-        else:
-            # Add emoji to field name if available
-            display_fields = [
-                f"{FIELD_EMOJIS.get(f, '')} {f}" if FIELD_EMOJIS.get(f) else f
-                for f in field_list
-            ]
-            st.markdown(f"{', '.join(display_fields)}", unsafe_allow_html=True)
-
-    # --- Column 2: Occupation Group ---
-    with col2:
-        if all_groups:
-            st.markdown("**All groups**")
-        else:
-            shown_groups = group_list[:3]
-            extra_count = len(group_list) - len(shown_groups)
-            shown_text = ", ".join(shown_groups)
-            if extra_count > 0:
-                shown_text += f" +{extra_count}"
-            st.markdown(f"**Group(s):** {shown_text}")
-
+# Function for displaying dynamic heading (based on occupation field/group)
 def display_dynamic_heading():
     # Get the selected filters
     filters = get_selected_occupation_filters()
@@ -158,7 +158,6 @@ def display_dynamic_heading():
     PAGE_EMOJIS = {
         "Occupation Trends Over Time": "📈",
         "Geographical Coverage": "🌍",
-        "Top Occupations": "🏆",
         "Top Occupations & Employers": "🏆",
         "Summary": "🗃️",
     }
@@ -208,6 +207,7 @@ def display_dynamic_heading():
             shown_text += f" +{extra_count}"
         st.markdown(f"**Group(s):** {shown_text}")
 
+# Function for setting the background on the different pages
 def set_background(current_page):
     # Set bg image based on current page
     asset_folder = "dashboard/assets"
