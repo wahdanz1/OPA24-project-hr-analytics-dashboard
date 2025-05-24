@@ -1,34 +1,47 @@
 import streamlit as st
 import pandas as pd
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters, display_occupation_choices, display_dynamic_heading
+from dashboard.utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
+from dashboard.plots import create_pie_chart
 
 def summary_page():
-    display_dynamic_heading()    
-    display_kpis()
+    display_dynamic_heading()
+    display_kpis_and_pie()
+    display_dataframes()
 
-# ---------- KPI-section ----------
-def display_kpis():
+# ---------- KPI & Pie-section ----------
+def display_kpis_and_pie():
     occupation_employers = get_occupation_with_most_unique_employers()
     st.metric(label="Occupation with Most Unique Employers", value=occupation_employers)
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
-    # First column - Jobs Posted within selected parameters
+    # First column - KPI's
     with col1:
-        selected_posted = get_jobs_posted_selected_period()
+        display_kpis()
+
+    # Second column - Pie chart (occupational distribution)
+    with col2:
+        display_pie()
+
+# ---------- KPI's ----------
+def display_kpis():
+    st.subheader("KPI's", divider=True)
+    with st.container():
+        selected_posted = get_jobs_posted_with_current_filters()
         st.metric(label="Jobs posted within selected parameters", value=selected_posted)
 
-    # Second column - Percentage of jobs requiring experience
-    with col2:
+    with st.container():
         experience_percentage = round(get_experience_percentage())
         st.metric(label="Jobs requiring experience", value=f"{experience_percentage} %")
 
-    # Third column - Percentage of jobs requiring driver's license
-    with col3:
+    with st.container():
         driver_license_percentage = round(get_driver_license_percentage())
         st.metric(label="Jobs requiring driver's license", value=f"{driver_license_percentage} %")
 
-    display_dataframes()
+# ---------- Pie chart ----------
+def display_pie():
+    st.subheader("Occupational Distribution (2% or more)", divider=True)
+    display_occupational_distribution()
 
 # ---------- Dataframe section ----------
 def display_dataframes():
@@ -46,7 +59,7 @@ def display_dataframes():
     # Second column - Least Experience Occupations
     with col2:
         st.subheader("Least experience required")
-        st.markdown("Occupations that require either no or little experience")
+        st.markdown("Occupations that require either no or little experience - not affected by sidebar filter")
         least_experience_occupation_df = get_top_5_least_experience_occupations()
         st.dataframe(least_experience_occupation_df, use_container_width=True, hide_index=True)
 
@@ -66,14 +79,13 @@ def display_dataframes():
         st.dataframe(top_unique_employer_occupations, use_container_width=True, hide_index=True)
 
 
-
 ################################################
 #   Methods that return values for the KPIs    #
 ################################################
 
 # Top - Returns the top #1 occupation with the most unique employers hiring
 def get_occupation_with_most_unique_employers() -> str:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -82,6 +94,8 @@ def get_occupation_with_most_unique_employers() -> str:
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND experience_required = {requires_experience}
+            AND workplace_region IN ({region_string})
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
             AND employer_name IS NOT NULL
@@ -98,14 +112,16 @@ def get_occupation_with_most_unique_employers() -> str:
     count = df.iloc[0]["unique_employer_count"]
     return f"{occ} ({count} employers)"
 
-# Column 1 - Returns the number of jobs posted in the selected period
-def get_jobs_posted_selected_period():
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+# Column 1 - Returns the number of jobs posted based on current filters
+def get_jobs_posted_with_current_filters():
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
     query = f"""
         SELECT COUNT(*) AS jobs_posted
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
             AND (NOW() - INTERVAL {start_day} DAY)
+            AND experience_required = {requires_experience}
+            AND workplace_region IN ({region_string})
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
     """
@@ -114,7 +130,7 @@ def get_jobs_posted_selected_period():
 
 # Column 2 - Returns the percentage of ads requiring experience
 def get_experience_percentage() -> float:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, _, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -123,6 +139,7 @@ def get_experience_percentage() -> float:
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND workplace_region IN ({region_string})
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
     """
@@ -131,7 +148,7 @@ def get_experience_percentage() -> float:
 
 # Column 3 - Returns the percentage of ads requiring driver's license
 def get_driver_license_percentage() -> float:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -140,6 +157,8 @@ def get_driver_license_percentage() -> float:
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND experience_required = {requires_experience}
+            AND workplace_region IN ({region_string})
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
     """
@@ -148,12 +167,56 @@ def get_driver_license_percentage() -> float:
 
 
 ################################################
+#                  Pie chart                   #
+################################################
+
+# Function for getting all occupations for the pie chart
+def display_occupational_distribution():
+    # Build variables based on the sidebar filters
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
+
+    query = f"""
+            SELECT
+                occupation_field,
+                occupation_group,
+                occupation,
+                COUNT(vacancies) AS total_vacancies
+            FROM marts.mart_summary
+            WHERE occupation_field IN ({occupation_field_string})
+                AND occupation_group IN ({occupation_group_string})
+                AND experience_required = {requires_experience}
+                AND workplace_region IN ({region_string})
+                AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
+                                        AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
+            GROUP BY
+                occupation_field,
+                occupation_group,
+                occupation
+            ORDER BY total_vacancies DESC
+            """
+    data = fetch_data_from_db(query)
+
+    # Check if the data is empty before plotting
+    # If the data is not empty, create a pie chart using Plotly
+    if not data.empty:
+        data["share"] = data["total_vacancies"] / data["total_vacancies"].sum()
+        filtered_data = data[data["share"] >= 0.02]
+        fig = create_pie_chart(
+            filtered_data,
+            values="total_vacancies",
+            names="occupation",
+            title=" ",
+            )
+        st.plotly_chart(fig, use_container_width=True)
+
+
+################################################
 #             Dataframe functions              #
 ################################################
 
 # Column 1 - Returns the top 5 occupations with the most vacancies
 def get_top_occupations() -> pd.DataFrame:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT
@@ -162,6 +225,7 @@ def get_top_occupations() -> pd.DataFrame:
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND experience_required = {requires_experience}
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
         GROUP BY "Occupation"
@@ -173,7 +237,7 @@ def get_top_occupations() -> pd.DataFrame:
 
 # Column 2 - Returns the top 5 occupations with the least experience required
 def get_top_5_least_experience_occupations() -> pd.DataFrame:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -197,7 +261,7 @@ def get_top_5_least_experience_occupations() -> pd.DataFrame:
 
 # Column 3 - Returns the top 5 employers with the highest average number of openings per ad
 def average_vacancies_per_job_ad_employer():
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -207,6 +271,7 @@ def average_vacancies_per_job_ad_employer():
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND experience_required = {requires_experience}
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
             AND "Employer" IS NOT NULL
@@ -221,7 +286,7 @@ def average_vacancies_per_job_ad_employer():
 
 # Column 4 - Returns the top 5 occupations with the most unique employers hiring
 def get_top_5_occupations_by_unique_employers() -> pd.DataFrame:
-    occupation_field_string, occupation_group_string, _, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
     query = f"""
         SELECT 
@@ -230,6 +295,7 @@ def get_top_5_occupations_by_unique_employers() -> pd.DataFrame:
         FROM marts.mart_summary
         WHERE publication_date BETWEEN (NOW() - INTERVAL '{end_day} day')
             AND (NOW() - INTERVAL '{start_day} day')
+            AND experience_required = {requires_experience}
             AND occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
             AND employer_name IS NOT NULL
