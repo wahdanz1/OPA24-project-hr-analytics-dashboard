@@ -1,16 +1,17 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters
+from dashboard.utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
 from dashboard.plots import create_vertical_bar_chart
 
 
 def top_employers_page():
-    st.header("Top Occupations per Occupation Field", divider=True)
+    display_dynamic_heading()
+
     top_occupation_per_field()
     st.divider()
 
 def top_occupation_per_field():
     # Get filters from sidebar
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
 
     # Main top employers query
     query1 = f"""
@@ -20,7 +21,8 @@ def top_occupation_per_field():
                 occupation_field,
                 SUM(total_vacancies) AS total_vacancies
             FROM marts.mart_top_employers_dynamic
-            WHERE occupation_field IN ({name_string})
+            WHERE occupation_field IN ({occupation_field_string})
+            AND occupation_group IN ({occupation_group_string})
             AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
                                     AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
             GROUP BY occupation, occupation_field
@@ -44,7 +46,7 @@ def top_occupation_per_field():
             x_label="Occupation Field",
             y_value="total_vacancies",
             y_label="Vacancies per Occupation",
-            title=f"Top occupations per Occupation Field",
+            title=" ",
             color_column="occupation",
             hover_data={"total_vacancies": True,
                         "occupation": True,
@@ -58,7 +60,7 @@ def top_occupation_per_field():
     # Generate list of available occupations
     occupation_options = data1['occupation'].unique().tolist()
     
-    # Region selection for the graph
+    # Occupation selection for the graph
     selected_occupations = st.multiselect(
         "Select one or more occupation to explore details:",
         options=occupation_options,
