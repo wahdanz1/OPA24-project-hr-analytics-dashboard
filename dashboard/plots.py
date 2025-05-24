@@ -9,7 +9,6 @@ def create_horizontal_bar_chart(data,**kwargs):
     title = kwargs.pop("title", "")
     color_column = kwargs.pop("color_column", "")
     margin = kwargs.pop("margin", dict(l=0, r=0, t=0, b=0))
-    color_gradient = kwargs.pop("color_gradient", px.colors.diverging.Spectral)
     hover_template = kwargs.pop("hover_template", "")
 
     fig = px.bar(
@@ -36,6 +35,8 @@ def create_horizontal_bar_chart(data,**kwargs):
             xanchor="center",
             font=dict(size=20)
         ),
+        uniformtext_minsize=16,
+        uniformtext_mode='hide'
     )
 
     fig.update_traces(
@@ -62,7 +63,6 @@ def create_vertical_bar_chart(data,**kwargs):
     showticklabels = kwargs.pop("showticklabels", True)
     barmode = kwargs.pop("barmode", "stack")
     textangle = kwargs.pop("textangle", 0)
-    hover_template = kwargs.pop("hover_template", "")
 
     fig = px.bar(
         data,
@@ -87,6 +87,8 @@ def create_vertical_bar_chart(data,**kwargs):
             xanchor="center",
             font=dict(size=20)
         ),
+        uniformtext_minsize=16,
+        uniformtext_mode='hide'
     )
 
     fig.update_yaxes(
@@ -107,7 +109,6 @@ def create_line_chart(data,**kwargs):
     y_label = kwargs.pop("y_label", "")
     title = kwargs.pop("title", "")
     color_column = kwargs.pop("color_column", "")
-    
 
     fig = px.line(
         data,
@@ -130,5 +131,30 @@ def create_line_chart(data,**kwargs):
             font=dict(size=20)
         ),
     )
+
+    return fig
+
+
+
+# Create a pie chart using Plotly
+def create_pie_chart(data,**kwargs):
+    values = kwargs.pop("values", "")
+    names = kwargs.pop("names", "")
+    title = kwargs.pop("title", "")
+
+    fig = px.pie(
+        data,
+        values=values,
+        names=names,
+        title=title,
+        **kwargs
+    )
+
+    fig.update_layout(
+        margin=dict(t=10, b=10, l=10, r=10),
+        title=title,
+        uniformtext_minsize=16,
+        uniformtext_mode='hide'
+        )
 
     return fig
