@@ -1,0 +1,24 @@
+[theme]
+
+# Theme - "light" or "dark"
+base = "dark"
+
+# Primary accent color - for buttons, sliders, etc.
+primaryColor = "rgb(197, 44, 95)"
+
+# Color used for all links.
+linkColor = "#4b4bff"
+
+# Background and secondary color of the app
+backgroundColor = "rgb(38, 39, 48)"
+secondaryBackgroundColor = "rgb(38, 39, 48)"  # For most interactive widgets
+
+# Text, fonts, etc.
+textColor = "#FFFFFF"
+font = "sans serif"  # "sans serif", "serif", or "monospace"
+
+showWidgetBorder = true
+
+[theme.sidebar]
+backgroundColor = "rgb(38, 39, 48)"
+secondaryBackgroundColor = "rgb(60, 62, 76)"
