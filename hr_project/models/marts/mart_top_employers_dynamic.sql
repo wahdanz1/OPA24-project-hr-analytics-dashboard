@@ -6,6 +6,7 @@ job_ads_enriched AS (
     SELECT
         ja.publication_date,
         o.occupation,
+        o.occupation_group,
         o.occupation_field,
         ja.vacancies
     FROM fct_job_ads ja
@@ -17,10 +18,12 @@ job_ads_enriched AS (
 SELECT
     publication_date,
     occupation,
+    occupation_group,
     occupation_field,
     SUM(vacancies) AS total_vacancies
 FROM job_ads_enriched
 GROUP BY
     publication_date,
     occupation,
+    occupation_group,
     occupation_field
