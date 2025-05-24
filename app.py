@@ -1,48 +1,12 @@
 import streamlit as st
-from dashboard.utils import get_occupation_field_list, get_occupation_group_list, set_background
+from dashboard.utils import get_occupation_field_list, get_occupation_group_list, get_region_list, set_background
+from css import css_code
 
 st.set_page_config(page_title="HR Dashboard", layout="wide")
 
-# Old CSS styling for sidebar
-        # section[data-testid="stSidebar"] {
-        #     width: 350px !important;
-        #     background-color: rgb(38, 39, 48);
-        # }
-
-# CSS to set the sidebar width
+# Retrieve css code and inject it into the dashboard html
 st.markdown(
-    """
-    <style>
-        /* Styling for all containers inside the main section */
-        div.stMainBlockContainer div[data-testid="stVerticalBlock"] {
-            background: rgb(38, 39, 48);
-            padding: 2rem !important;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Header styling */
-        header.stAppHeader {
-            background: transparent !important;
-        }
-
-        /* Target all element containers */
-        div[data-testid="stElementContainer"][width] {
-            width: auto !important;
-            max-width: 100% !important;
-        }
-
-        /* Optional: make tables and charts inside behave responsively too */
-        div[data-testid="stElementContainer"] > div {
-            max-width: 100% !important;
-        }
-        
-        /* Heading (h3) styling */
-        div[data-testid="stHeadingWithActionElements"] h3 {
-            color: rgb(197, 44, 95) !important;
-        }
-    </style>
-    """,
+    css_code,
     unsafe_allow_html=True,
 )
 
@@ -50,7 +14,7 @@ with st.sidebar:
     # Sidebar title
     st.title("📊 HR Dashboard")
 
-    # Page selection with key
+    # ----- Page selection with key -----
     page_selection = st.radio(
         "**Choose something:**",
         (
@@ -62,22 +26,41 @@ with st.sidebar:
         key="page_selection",
     )
 
-    ## Occupation field selection with key
+    # ----- Occupation field selection with key -----
     occupation_field_choice = st.selectbox(
         "**Occupation field:**",
         options=["All occupation fields"] + get_occupation_field_list(),
         key="occupation_field_choice",
     )
-
-    ## Occupation group selection with key
+    
+    # ----- Occupation group selection with key -----
     occupation_group_choices = st.multiselect(
         "**Occupation group(s):**",
         options=get_occupation_group_list(occupation_field_choice),
+        default=[],
         key="occupation_group_choices",
     )
 
+    # ----- Region selection with key -----
+    region_choice = st.selectbox(
+        "**Region:**",
+        options=["All regions"] + get_region_list(
+            occupation_field=occupation_field_choice,
+            occupation_groups=occupation_group_choices if occupation_group_choices else ["All occupation groups"]
+        ),
+        key="sidebar_region_choice",
+    )
+
+    # # ----- Municipality selection with key -----
+    # municipality_choice = st.selectbox(
+    #     "**Municipality:**",
+    #     options=["All municipalities"] + get_occupation_field_list(),
+    #     key="municipality_choice",
+    # )
+
+    # ----- Result limit slider with key -----
+    # Exclude limit filter from certain pages
     if page_selection != "Summary" and page_selection != "Geographical Coverage":
-        # Result limit slider with key
         limit = st.select_slider(
             label="Results to show:",
             options=[x for x in range(1, 21)],
@@ -85,14 +68,23 @@ with st.sidebar:
             key="sidebar_limit",
         )
 
-    # Interval range slider with key
+    # ----- Interval range slider with key -----
     start_day, end_day = st.select_slider(
         "Interval (in days):",
         options=[x for x in range(1, 61)],
         value=(1, 60),
         key="sidebar_interval"
     )
+    
+    # ----- Requires experience-checkbox -----
+    requires_experience = st.checkbox(
+        "Requires experience?",
+        key="sidebar_requires_experience"
+    )
 
+################################################
+#              Page if-statement               #
+################################################
 
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
