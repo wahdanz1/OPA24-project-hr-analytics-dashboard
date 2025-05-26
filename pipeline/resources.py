@@ -42,7 +42,7 @@ def jobsearch_resource(params):
         # If fewer ads than the limit are returned (less than a full page), break the loop
         if len(hits) < limit or offset > 1900:
             if offset > 1900:
-                    print(f"WARNING --- Reached 2000 hits may contain hidden data")
+                    print(f"⚠️ Warning: reached 2000 hits - some ads might not have been fetched.")
             break
         
 

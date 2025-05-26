@@ -1,0 +1,98 @@
+version: 2
+
+models:
+  - name: mart_occupation_trends_over_time
+    description: >
+      Summarizes job ad trends over time, combining occupation and experience data for tracking changes in the job market.
+    columns:
+      - name: publication_date
+        description: The date the job ad was published.
+      - name: vacancies
+        description: Number of vacancies in the job ad.
+      - name: experience_required
+        description: Indicates whether the job ad required prior experience.
+      - name: occupation
+        description: The specific occupation title.
+      - name: occupation_group
+        description: Mid-level categorization of occupation.
+      - name: occupation_field
+        description: High-level occupation field for broader grouping.
+
+  - name: mart_summary
+    description: >
+      A fully enriched summary view of job ads including occupation, employer, and auxiliary attributes for use in dashboards and analytics.
+    columns:
+      - name: publication_date
+        description: The date the job ad was published.
+      - name: vacancies
+        description: Number of vacancies.
+      - name: relevance
+        description: DB-sourced metric indicating job ad ranking or prioritization.
+      - name: application_deadline
+        description: The last day to apply for the job.
+      - name: occupation
+        description: Specific job title.
+      - name: occupation_group
+        description: Mid-level occupation grouping.
+      - name: occupation_field
+        description: Broad occupational field.
+      - name: employer_name
+        description: Name of the employer.
+      - name: employer_workplace
+        description: Workplace name, if different from the employer name.
+      - name: workplace_municipality
+        description: Municipality where the job is located.
+      - name: workplace_region
+        description: Broader region of the job location.
+      - name: experience_required
+        description: Indicates if experience is needed for the job.
+      - name: driver_license
+        description: Whether a driver's license is required.
+      - name: access_to_own_car
+        description: Whether access to a private vehicle is required.
+
+  - name: mart_occupation_vacancy_totals
+    description: >
+      Mart aggregating total number of vacancies over time per occupation, group, and field.
+      Used to power top-occupation visualizations with dynamic filtering.
+    columns:
+      - name: publication_date
+        description: Date the job ad was published.
+      - name: occupation
+        description: Occupation name.
+      - name: occupation_group
+        description: Occupation group classification.
+      - name: occupation_field
+        description: Occupation field classification.
+      - name: total_vacancies
+        description: Total number of vacancies posted for this occupation on that date.
+
+  - name: mart_top_employers
+    description: >
+      Lists the top employers by total number of job ad vacancies, grouped by occupation and workplace region.
+    columns:
+      - name: employer_name
+        description: Name of the employer.
+      - name: workplace_region
+        description: Region where the job is located.
+      - name: occupation
+        description: Specific job title.
+      - name: total_vacancies
+        description: Total number of advertised vacancies for that employer/occupation.
+
+  - name: mart_occupation_group_vacancy_totals
+    description: >
+      Provides dynamic breakdowns of top occupations by region and municipality over time, reflecting shifting demand.
+    columns:
+      - name: publication_date
+        description: The date the job ad was published.
+      - name: workplace_region
+        description: Region of the job.
+      - name: workplace_municipality
+        description: Municipality of the job.
+      - name: occupation_group
+        description: Mid-level job grouping.
+      - name: occupation_field
+        description: Broader occupation classification.
+      - name: total_vacancies
+        description: Sum of all vacancies per group.

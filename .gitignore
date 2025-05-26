@@ -173,8 +173,14 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# duckdb 
+# DuckDB 
 *.duckdb
 
-# other
+# # Github Pages (docs/)
+# # Ignore everything in docs EXCEPT tracked files
+# docs/*
+# !docs/index.html
+# !docs/search/*    # Keep search folder too
+
+# Other
 .vscode/

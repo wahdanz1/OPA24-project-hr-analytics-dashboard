@@ -18,7 +18,7 @@ from config import db_path, table_name, occupation_field_dict
 # Creates a pipeline 
 def create_pipeline():
     pipeline = dlt.pipeline(
-        pipeline_name = "hr_data_pipeline",
+        pipeline_name = "job_ads_pipeline",
         destination = dlt.destinations.duckdb(str(db_path)),
         dataset_name ="staging",
     )
@@ -30,10 +30,11 @@ def run_pipeline(table_name , is_first_time:bool):
     if is_first_time:
         day_list = utils.get_past_days(60)
         utils.delete_duckdb_file()
-        print("Creating New Pipeline")
+        print("Creating new pipeline...")
     else:
         day_list = utils.get_past_days(3) 
-        print("Updating Pipeline")
+        print("Updating pipeline...")
+
     # Loop through each occupation field in the list
     for field_name,field_code in occupation_field_dict.items():
             print(f"Loading {field_name}")

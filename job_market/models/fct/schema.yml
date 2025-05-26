@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fct_job_ads
+    description: >
+      Fact table representing job advertisements with foreign key references to
+      dimensions such as occupation, employer, auxiliary attributes, and job details.
+    columns:
+      - name: publication_date
+        description: "Date the job ad was published."
+      - name: job_details_id
+        description: "Foreign key referencing detailed job description in dim_job_details."
+      - name: occupation_id
+        description: "Foreign key referencing the occupation in dim_occupation."
+      - name: employer_id
+        description: "Foreign key referencing the employer in dim_employer."
+      - name: aux_id
+        description: "Foreign key referencing auxiliary attributes in dim_aux."
+      - name: vacancies
+        description: "Number of job vacancies available for the ad."
+      - name: relevance
+        description: "Relevance score indicating how well the ad matches search criteria."
+      - name: application_deadline
+        description: "Final date by which applications must be submitted."

@@ -1,0 +1,45 @@
+version: 2
+
+tests:
+  - name: test_duplicate_primary_keys
+    description: >
+      Ensures no duplicate primary keys exist in key models, which could compromise downstream joins and analysis.
+    arguments:
+      - name: model_name
+        description: The model where the primary key uniqueness is enforced.
+        type: string
+      - name: primary_key_columns
+        description: List of columns that make up the primary key.
+        type: array
+
+  - name: test_employer_org_number
+    description: >
+      Validates that all employer organization numbers are exactly 10 digits, as expected by Swedish organization number standards.
+    arguments:
+      - name: column_name
+        description: The column containing employer organization numbers.
+        type: string
+
+  - name: test_future_publication_date
+    description: >
+      Checks for any job ads with a publication date set in the future, which could indicate incorrect or dirty data.
+    arguments:
+      - name: publication_date_column
+        description: The column containing the publication date.
+        type: string
+
+  - name: test_missing_employer_name
+    description: >
+      Flags records where `employer_name` is missing or null — important for attribution and insights.
+    arguments:
+      - name: employer_name_column
+        description: The column representing the employer's name.
+        type: string
+
+  - name: test_missing_occupation_id
+    description: >
+      Detects rows with missing occupation identifiers, which are necessary for classification and analysis.
+    arguments:
+      - name: occupation_id_column
+        description: The column that holds occupation IDs.
+        type: string

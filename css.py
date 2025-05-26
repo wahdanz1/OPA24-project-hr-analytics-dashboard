@@ -28,5 +28,27 @@ css_code="""
         div[data-testid="stHeadingWithActionElements"] h3 {
             color: rgb(197, 44, 95) !important;
         }
+
+        /* Button styling (custom buttons) */
+        .dbt-button {
+            font-size: 16px;
+            padding: 10px;
+            background-color: rgb(60, 62, 76);
+            color: white;
+            border-radius: 8px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .dbt-button:hover {
+            border-color: rgb(197, 44, 95);
+        }
+
+        .dbt-button:active {
+            border-color: rgb(197, 44, 95);
+        }
     </style>
     """
