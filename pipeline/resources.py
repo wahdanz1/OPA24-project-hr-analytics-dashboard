@@ -54,7 +54,7 @@ def _get_ads(url_for_search, params):
     headers = {"accept": "application/json"}  # Request JSON response
     # Add a sleep to respect the endpoint
     sleep_time = 1
-    print(f"Sleeping for {sleep_time} second(s)...")
+    print(f"Fetching data from page...")
     time.sleep(sleep_time)  # Uncomment if you want to add a delay between requests
     response = requests.get(url_for_search, headers=headers, params=params) # Send GET request with parameters
     response.raise_for_status() # Raise an error for failed requests (non-2xx HTTP status)
