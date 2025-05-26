@@ -101,13 +101,13 @@ You can run all tests with:
 cd job_market
 dbt test
 ```
-More details and test results can be found in the <a href="https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/">DBT Documentation</a>.
+More details and test results can be found in the <a href="https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/" target="_blank">DBT Documentation</a>.
 
 <br>
 
 ## Credits
-<a href="https://github.com/wahdanz1">wahdanz1</a>
+<a href="https://github.com/wahdanz1" target="_blank">wahdanz1</a>
 
-<a href="https://github.com/Remmold">Remmold</a>
+<a href="https://github.com/Remmold" target="_blank">Remmold</a>
 
-<a href="https://github.com/Oskara1209">Oskara1209</a>
+<a href="https://github.com/Oskara1209" target="_blank">Oskara1209</a>
