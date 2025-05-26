@@ -1,4 +1,5 @@
 import plotly.express as px
+import plotly.graph_objects as go
 
 # Create a horizontal bar chart using Plotly
 def create_horizontal_bar_chart(data,**kwargs):
@@ -156,5 +157,44 @@ def create_pie_chart(data,**kwargs):
         uniformtext_minsize=16,
         uniformtext_mode='hide'
         )
+
+    return fig
+
+# Create a marimekko chart using plotly (graph objects)
+def create_marimekko_chart(data, municipality_labels):
+    fig = go.Figure()
+
+    for _, row in data.iterrows():
+        fig.add_trace(go.Bar(
+            x=[row['x_base']],
+            y=[row['height']],
+            width=[row['width']],
+            name=row['occupation_group'],
+            legendgroup=row['occupation_group'],
+            showlegend=not any(
+                (trace.name == row['occupation_group']) for trace in fig.data
+            ),
+            marker=dict(line=dict(width=0)),
+            hovertemplate=(
+                f"<b>{row['occupation_group']}</b><br>"
+                f"Municipality: {row['workplace_municipality']}<br>"
+                f"Vacancies: {row['total_vacancies']}<extra></extra>"
+            )
+        ))
+
+    fig.update_layout(
+        barmode='stack',
+        title='Top Occupation Groups per Municipality (Marimekko-style)',
+        xaxis=dict(
+            title='Municipality (Width = Total Vacancies)',
+            tickmode='array',
+            tickvals=municipality_labels['x_center'],
+            ticktext=municipality_labels['workplace_municipality'],
+            tickangle=-45
+        ),
+        yaxis=dict(title='Share of Municipality Vacancies'),
+        height=500,
+        margin=dict(l=40, r=40, t=60, b=80)
+    )
 
     return fig
