@@ -1,13 +1,98 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters
-from dashboard.plots import create_vertical_bar_chart
+from dashboard.utils import fetch_data_from_db, get_sidebar_filters, get_occupation_field_list
+from dashboard.plots import create_vertical_bar_chart, create_marimekko_chart
 
 def geographical_coverage_page():
     st.header("🌍 Geographical Coverage", divider=True)
     st.markdown("This page provides insights into the coverage of job ads across different municipalities.")
-    top_occupations_per_municipality()
+    # top_occupations_per_municipality()
     # st.divider()
+    top_occupation_groups_marimekko()
 
+# Function for creating and displaying marimekko chart on page
+def top_occupation_groups_marimekko(top_n: int = 10):
+    st.markdown("This Marimekko-chart shows the top occupation groups per municipality based on total vacancies.")
+
+    # Build sidebar values
+    occupation_field_choice = st.session_state.get("occupation_field_choice", "All occupation fields")
+    _, occupation_group_string, _, start_day, end_day, _, region_string = get_sidebar_filters()
+
+    if occupation_field_choice == "All occupation fields":
+        occupation_fields = get_occupation_field_list()
+    else:
+        occupation_fields = [occupation_field_choice]
+
+    with st.spinner("Loading charts..."):
+        for occupation_field in occupation_fields:
+            # Display field name as a subheader
+            if occupation_field_choice == "All occupation fields":
+                st.subheader(f"🧩 {occupation_field}")
+
+            # Build SQL
+            query = f"""
+                WITH filtered_data AS (
+                    SELECT
+                        workplace_municipality,
+                        occupation_group,
+                        occupation_field,
+                        workplace_region,
+                        SUM(total_vacancies) AS total_vacancies
+                    FROM marts.mart_top_occupations_dynamic
+                    WHERE occupation_field = '{occupation_field}'
+                        AND workplace_region IN ({region_string})
+                        AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
+                                                AND (CURRENT_DATE - INTERVAL '{start_day}' DAY)
+                    GROUP BY workplace_municipality, occupation_group, occupation_field, workplace_region
+                )
+
+                SELECT
+                    *,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY workplace_municipality, occupation_field
+                        ORDER BY total_vacancies DESC
+                    ) AS rank
+                FROM filtered_data
+                WHERE total_vacancies IS NOT NULL
+                QUALIFY rank <= 3
+                ORDER BY total_vacancies DESC
+            """
+            data = fetch_data_from_db(query)
+
+            # If no data, skip this chart
+            if data.empty:
+                st.info(f"No data found for {occupation_field}.")
+                continue
+
+            # Calculate width for each municipality
+            top_munis = (
+                data.groupby('workplace_municipality')['total_vacancies']
+                    .sum().reset_index()
+                    .sort_values('total_vacancies', ascending=False)
+                    .head(top_n)
+            )
+
+            data = data[data['workplace_municipality'].isin(top_munis['workplace_municipality'])]
+
+            top_munis['width'] = top_munis['total_vacancies'] / top_munis['total_vacancies'].sum()
+            top_munis['x_center'] = top_munis['width'].cumsum() - top_munis['width'] / 2
+            top_munis['x_base'] = top_munis['width'].cumsum() - top_munis['width']
+
+            data = data.merge(
+                top_munis[['workplace_municipality', 'x_base', 'x_center', 'width']],
+                on='workplace_municipality'
+            )
+
+            data['y_total'] = data.groupby('workplace_municipality')['total_vacancies'].transform('sum')
+            data['height'] = data['total_vacancies'] / data['y_total']
+
+            fig = create_marimekko_chart(
+                data,
+                municipality_labels=top_munis[['workplace_municipality', 'x_center']]
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
+# Function for creating and displaying horizontal bar chart on page
 def top_occupations_per_municipality():
     # Description for the graph
     st.markdown("This graph shows the top occupations per municipality based on total vacancies.")
