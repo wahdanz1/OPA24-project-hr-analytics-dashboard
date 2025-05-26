@@ -18,7 +18,7 @@ def top_occupation_per_field():
                 occupation,
                 occupation_field,
                 SUM(total_vacancies) AS total_vacancies
-            FROM marts.mart_top_employers_dynamic
+            FROM marts.mart_occupation_vacancy_totals
             WHERE occupation_field IN ({occupation_field_string})
             AND occupation_group IN ({occupation_group_string})
             AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
