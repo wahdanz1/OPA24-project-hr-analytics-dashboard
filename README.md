@@ -69,6 +69,11 @@ job_market:
 <br>
 
 ## Documentation (dbt docs)
+Documentation can be accessed through the dashboard (**dbt docs**), but if you want to generate it locally for use with `dbt docs serve`, you can run the script `generate_and_deploy_docs.py` (in the project root).
+
+<a href="https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/" target="_blank">
+  <img src="https://img.shields.io/badge/📘%20View%20DBT%20Documentation-blue?style=for-the-badge" alt="DBT Docs">
+</a>
 
 <br>
 
@@ -93,6 +98,16 @@ The project includes a series of **dbt tests** to ensure data quality and trustw
 You can run all tests with:
 
 ```bash
+cd job_market
 dbt test
 ```
-More details and test results can be found in the DBT Documentation.
+More details and test results can be found in the <a href="https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/">DBT Documentation</a>.
+
+<br>
+
+## Credits
+<a href="https://github.com/wahdanz1">wahdanz1</a>
+
+<a href="https://github.com/Remmold">Remmold</a>
+
+<a href="https://github.com/Oskara1209">Oskara1209</a>

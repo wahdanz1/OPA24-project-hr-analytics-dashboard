@@ -83,11 +83,14 @@ with st.sidebar:
     )
 
     # ----- DBT Documentation-link -----
-    if st.button("📘 View DBT Documentation"):
-        st.markdown(
-            '<meta http-equiv="refresh" content="0; url=https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/">',
-            unsafe_allow_html=True
-        )
+    st.markdown(
+    """
+    <a href="https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/" target="_blank">
+        <button class="dbt-button">📘 View DBT Documentation</button>
+    </a>
+    """,
+    unsafe_allow_html=True
+    )
 
 ################################################
 #              Page if-statement               #
