@@ -2,7 +2,7 @@ import streamlit as st
 from dashboard.utils import get_occupation_field_list, get_occupation_group_list, get_region_list, set_background
 from css import css_code
 
-st.set_page_config(page_title="HR Dashboard", layout="wide")
+st.set_page_config(page_title="Job Market Dashboard", layout="wide")
 
 # Retrieve css code and inject it into the dashboard html
 st.markdown(
@@ -12,7 +12,7 @@ st.markdown(
 
 with st.sidebar:
     # Sidebar title
-    st.title("📊 HR Dashboard")
+    st.title("📊 Job Market Dashboard")
 
     # ----- Page selection with key -----
     page_selection = st.radio(
@@ -81,6 +81,13 @@ with st.sidebar:
         "Requires experience?",
         key="sidebar_requires_experience"
     )
+
+    # ----- DBT Documentation-link -----
+    if st.button("📘 View DBT Documentation"):
+        st.markdown(
+            '<meta http-equiv="refresh" content="0; url=https://wahdanz1.github.io/OPA24-project-hr-analytics-dashboard/">',
+            unsafe_allow_html=True
+        )
 
 ################################################
 #              Page if-statement               #
