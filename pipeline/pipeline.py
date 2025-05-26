@@ -28,7 +28,7 @@ def create_pipeline():
 def run_pipeline(table_name , is_first_time:bool):
     pipeline = create_pipeline()
     if is_first_time:
-        day_list = utils.get_past_days(183)
+        day_list = utils.get_past_days(60)
         utils.delete_duckdb_file()
         print("Creating New Pipeline")
     else:

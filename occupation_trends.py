@@ -4,20 +4,21 @@ import pandas as pd
 from dashboard.utils import fetch_data_from_db, get_sidebar_filters
 from dashboard.plots import create_horizontal_bar_chart, create_line_chart
 
-
 def occupation_trends_page():
-    st.header("Occupation Trends Over Time", divider=True)
-    everything_test()
-    pass
-
-def everything_test():
+    st.header("📈 Occupation Trends Over Time", divider=True)
     
     # Description
     st.markdown("This graph shows the trends in job vacancies over time.")
 
     requires_experience = "TRUE" if st.checkbox("Requires Experience", value=False) else "FALSE"
 
-    name_string, limit_value, start_day, end_day = get_sidebar_filters()
+    bar_plot(requires_experience)
+    st.divider()
+    line_plot(requires_experience)
+
+# Bar chart area
+def bar_plot(requires_experience):
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
     # Send a query to the database to get the data for the graph
     bar_query = f"""
             SELECT COUNT(vacancies) AS job_count,occupation FROM marts.mart_occupation_trends_over_time
@@ -25,19 +26,48 @@ def everything_test():
                 AND publication_date
                 BETWEEN (NOW() - INTERVAL {end_day} DAY)
                     AND (NOW() - INTERVAL {start_day} DAY)
-                AND occupation_field IN ({name_string})
+                AND occupation_field IN ({occupation_field_string})
+                AND occupation_group IN ({occupation_group_string})
             GROUP BY occupation
             ORDER BY job_count DESC
             LIMIT {limit_value}
-
         """
+
+    # Fetch data from the database using the queries
+    bar_data = fetch_data_from_db(bar_query)
+
+    # Check if the data is empty before plotting   
+    if not bar_data.empty:
+        # Create a bar chart using Plotly
+        bar_fig = create_horizontal_bar_chart(
+            data=bar_data,
+            x_value="job_count",
+            y_value="occupation",
+            title="Job openings for selected period",
+            x_label="Job Openings",
+            y_label="Occupation",
+            color_column="occupation",
+            margin=dict(l=50, r=50, t=50, b=40),
+            text="job_count",
+        )
+
+        st.plotly_chart(bar_fig, use_container_width=True)
+
+# Line chart area
+def line_plot(requires_experience):
+    # Get sidebar filters
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
+    
     # Query to get job openings over time for top occupations
     line_query = f"""
     WITH ranked_occupations AS (
-        SELECT occupation, COUNT(vacancies) AS job_count
+        SELECT
+            occupation,
+            COUNT(vacancies) AS job_count
         FROM marts.mart_occupation_trends_over_time
         WHERE experience_required = {requires_experience}
-            AND occupation_field IN ({name_string})
+            AND occupation_field IN ({occupation_field_string})
+            AND occupation_group IN ({occupation_group_string})
             AND publication_date BETWEEN (NOW() - INTERVAL {end_day} DAY)
                 AND (NOW() - INTERVAL {start_day} DAY)
         GROUP BY occupation
@@ -56,33 +86,10 @@ def everything_test():
             AND (NOW() - INTERVAL {start_day} DAY)
     GROUP BY week, m.occupation, r.job_count
     ORDER BY r.job_count DESC, m.occupation, week;
+    """
 
-        """
-
-
-    # Fetch data from the database using the queries
-    bar_data = fetch_data_from_db(bar_query)
+    # Fetch data from the database using the query
     line_data = fetch_data_from_db(line_query)
-
-
-
-
-    # Check if the data is empty before plotting   
-    if not bar_data.empty:
-        # Create a bar chart using Plotly
-        bar_fig = create_horizontal_bar_chart(
-            data=bar_data,
-            x_value="job_count",
-            y_value="occupation",
-            title="Job openings for selected period",
-            x_label="Job Openings",
-            y_label="Job Openings",
-            color_column="occupation",
-            margin=dict(l=50, r=50, t=50, b=40)
-        )
-
-
-        st.plotly_chart(bar_fig, use_container_width=True)
 
     # Check if the data is empty before plotting    
     if not line_data.empty:
@@ -97,4 +104,3 @@ def everything_test():
         )
 
         st.plotly_chart(line_fig, use_container_width=True)
-
