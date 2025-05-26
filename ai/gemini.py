@@ -24,7 +24,7 @@ class GeminiHandler:
     
     # Get the response from the Gemini model
 
-    def get_response(self, prompt, history=None,csv_file=None):
+    def get_response(self, prompt, history=None,csv_string=None):
         response = self.client.models.generate_content(
             model=self.model,
             contents=f"""
@@ -34,7 +34,7 @@ class GeminiHandler:
             this is the user prompt: {prompt}
             this is the response format: {get_response_format()}
             this is the history of the conversation: {history}
-            if there is a csv file, please use it to answer the question: {csv_file if csv_file else "No CSV file provided"}
+            if there is a csv file, please use it to answer the question: {csv_string if csv_string else "No CSV file provided"}
             """
         )
 
