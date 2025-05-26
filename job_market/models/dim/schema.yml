@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: dim_aux
+    description: >
+      Dimension table representing auxiliary job attributes related to
+      experience, driving license, and access to own car.
+    columns:
+      - name: auxiliary_attributes_id
+        description: "Surrogate key uniquely identifying the combination of auxiliary attributes."
+      - name: experience_required
+        description: "Experience level required for the job."
+      - name: driver_license
+        description: "Flag indicating if a driving license is required."
+      - name: access_to_own_car
+        description: "Flag indicating if access to own car is required."
+
+  - name: dim_employer
+    description: >
+      Dimension table containing distinct employers and their workplace information.
+    columns:
+      - name: employer_id
+        description: "Surrogate key uniquely identifying an employer record."
+      - name: employer_name
+        description: "Name of the employer."
+      - name: employer_workplace
+        description: "Workplace name associated with the employer."
+      - name: employer_org_number
+        description: "Organization number identifying the employer."
+      - name: workplace_street_address
+        description: "Street address of the workplace."
+      - name: workplace_region
+        description: "Region where the workplace is located."
+      - name: workplace_municipality
+        description: "Municipality of the workplace."
+      - name: workplace_postcode
+        description: "Postcode for the workplace."
+      - name: workplace_city
+        description: "City where the workplace is located."
+      - name: workplace_country
+        description: "Country of the workplace."
+
+  - name: dim_job_details
+    description: >
+      Dimension table containing detailed job information such as
+      headlines, descriptions, employment type, and scope of work.
+    columns:
+      - name: job_details_id
+        description: "Surrogate key uniquely identifying detailed job information."
+      - name: headline
+        description: "Headline or title of the job ad."
+      - name: description
+        description: "Job description in plain text."
+      - name: description_html_formatted
+        description: "HTML formatted job description."
+      - name: employment_type
+        description: "Type of employment (e.g., full-time, part-time)."
+      - name: duration
+        description: "Duration of the employment."
+      - name: salary_type
+        description: "Type of salary (e.g., hourly, monthly)."
+      - name: scope_of_work_min
+        description: "Minimum scope of work in hours or equivalent."
+      - name: scope_of_work_max
+        description: "Maximum scope of work in hours or equivalent."
+
+  - name: dim_occupation
+    description: >
+      Dimension table for occupations including occupation group and field information.
+    columns:
+      - name: occupation_id
+        description: "Surrogate key uniquely identifying the occupation."
+      - name: occupation
+        description: "Label or name of the occupation."
+      - name: occupation_group
+        description: "Group to which the occupation belongs."
+      - name: occupation_field
+        description: "Field or sector of the occupation."

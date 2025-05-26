@@ -1,0 +1,109 @@
+version: 2
+
+models:
+  - name: src_aux
+    description: >
+      Auxiliary source data selecting experience and driving license requirements
+      from the raw job ads source.
+    columns:
+      - name: experience_required
+        description: "Experience level required for the job."
+      - name: driver_license
+        description: "Indicates if a driving license is required."
+      - name: access_to_own_car
+        description: "Indicates if access to own car is required."
+
+  - name: src_employer
+    description: >
+      Extracts employer information and workplace address details from raw job ads.
+    columns:
+      - name: employer_name
+        description: "Name of the employer."
+      - name: employer_workplace
+        description: "Workplace associated with the employer."
+      - name: employer_org_number
+        description: "Employer's organization number (e.g., Swedish org number)."
+      - name: workplace_street_address
+        description: "Street address of the workplace."
+      - name: workplace_region
+        description: "Region where the workplace is located."
+      - name: workplace_municipality
+        description: "Municipality of the workplace."
+      - name: workplace_postcode
+        description: "Postcode of the workplace."
+      - name: workplace_city
+        description: "City of the workplace."
+      - name: workplace_country
+        description: "Country of the workplace."
+
+  - name: src_job_ads
+    description: >
+      Core job advertisement information including publication date, occupation,
+      employer details, experience and license requirements, vacancies, and deadlines.
+    columns:
+      - name: publication_date
+        description: "Date when the job ad was published."
+      - name: id
+        description: "Unique identifier for job details."
+      - name: occupation
+        description: "Occupation label related to the job ad."
+      - name: employer_name
+        description: "Name of the employer for this job ad."
+      - name: employer_workplace
+        description: "Workplace of the employer."
+      - name: workplace_municipality
+        description: "Municipality of the workplace."
+      - name: experience_required
+        description: "Experience required for the job."
+      - name: driver_license
+        description: "Whether a driving license is required."
+      - name: access_to_own_car
+        description: "Whether access to own car is required."
+      - name: vacancies
+        description: "Number of vacancies for this job ad."
+      - name: relevance
+        description: "Relevance score or ranking for the job ad."
+      - name: application_deadline
+        description: "Deadline for submitting applications."
+
+  - name: src_job_details
+    description: >
+      Detailed job descriptions, including headline, formatted description, employment
+      type, duration, salary type, and scope of work.
+    columns:
+      - name: id
+        description: "Unique identifier for job details."
+      - name: headline
+        description: "Headline/title of the job ad."
+      - name: description
+        description: "Plain text job description."
+      - name: description_html_formatted
+        description: "HTML formatted version of the job description."
+      - name: employment_type
+        description: "Type of employment (e.g., full-time, part-time)."
+      - name: duration
+        description: "Duration of the employment."
+      - name: salary_type
+        description: "Type of salary (e.g., hourly, monthly)."
+      - name: scope_of_work_min
+        description: "Minimum scope of work."
+      - name: scope_of_work_max
+        description: "Maximum scope of work."
+
+  - name: src_occupation
+    description: >
+      Occupation information, including IDs and labels for occupation, occupation group,
+      and occupation field.
+    columns:
+      - name: occupation_id
+        description: "Unique identifier for the occupation concept."
+      - name: occupation
+        description: "Label or name of the occupation."
+      - name: occupation_group_id
+        description: "Unique identifier for the occupation group."
+      - name: occupation_group
+        description: "Name of the occupation group."
+      - name: occupation_field_id
+        description: "Unique identifier for the occupation field."
+      - name: occupation_field
+        description: "Name of the occupation field."
