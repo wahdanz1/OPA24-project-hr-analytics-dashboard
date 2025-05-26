@@ -176,11 +176,11 @@ cython_debug/
 # DuckDB 
 *.duckdb
 
-# Github Pages (docs/)
-# Ignore everything in docs EXCEPT tracked files
-docs/*
-!docs/index.html
-!docs/search/*    # Keep search folder too
+# # Github Pages (docs/)
+# # Ignore everything in docs EXCEPT tracked files
+# docs/*
+# !docs/index.html
+# !docs/search/*    # Keep search folder too
 
 # Other
 .vscode/
