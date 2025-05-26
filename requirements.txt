@@ -1,8 +1,12 @@
-dlt==1.11.0
+dagster==1.10.11
+dbt_core==1.9.4
+dbt_duckdb==1.9.3
+dlt==1.10.0
+docker_py==1.10.6
 duckdb==1.2.2
+numpy==2.2.5
 pandas==2.2.3
 plotly==6.0.1
 python-dotenv==1.1.0
-Requests==2.32.3
 streamlit==1.44.1
 google-genai==1.15.0
