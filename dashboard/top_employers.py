@@ -1,6 +1,6 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
-from dashboard.plots import create_vertical_bar_chart
+from .utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
+from .plots import create_vertical_bar_chart
 
 
 def top_employers_page():

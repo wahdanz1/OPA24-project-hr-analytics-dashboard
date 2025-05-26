@@ -1,7 +1,7 @@
 import dlt
-from resources import jobsearch_resource
-from datetime import datetime,timedelta
-import utils
+from datetime import timedelta
+from .resources import jobsearch_resource
+from .utils import delete_duckdb_file, get_past_days
 
 # To be able to import config.py and access its variables
 import sys
@@ -28,11 +28,11 @@ def create_pipeline():
 def run_pipeline(table_name , is_first_time:bool):
     pipeline = create_pipeline()
     if is_first_time:
-        day_list = utils.get_past_days(60)
-        utils.delete_duckdb_file()
+        day_list = get_past_days(60)
+        delete_duckdb_file()
         print("Creating new pipeline...")
     else:
-        day_list = utils.get_past_days(3) 
+        day_list = get_past_days(3) 
         print("Updating pipeline...")
 
     # Loop through each occupation field in the list

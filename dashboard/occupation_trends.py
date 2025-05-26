@@ -1,8 +1,6 @@
 import streamlit as st
-import plotly.express as px
-import pandas as pd
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters
-from dashboard.plots import create_horizontal_bar_chart, create_line_chart
+from .utils import fetch_data_from_db, get_sidebar_filters
+from .plots import create_horizontal_bar_chart, create_line_chart
 
 def occupation_trends_page():
     st.header("📈 Occupation Trends Over Time", divider=True)

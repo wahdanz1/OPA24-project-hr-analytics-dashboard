@@ -1,6 +1,6 @@
 import streamlit as st
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters, get_occupation_field_list
-from dashboard.plots import create_vertical_bar_chart, create_marimekko_chart
+from .utils import fetch_data_from_db, get_sidebar_filters, get_occupation_field_list
+from .plots import create_vertical_bar_chart, create_marimekko_chart
 
 def geographical_coverage_page():
     st.header("🌍 Geographical Coverage", divider=True)
