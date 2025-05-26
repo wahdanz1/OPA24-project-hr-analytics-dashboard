@@ -1,7 +1,6 @@
 sources: 
-  - name: hr_job_ads
+  - name: job_ads
     schema: staging
     tables: 
       - name: stg_ads
         identifier: job_ads
-         
