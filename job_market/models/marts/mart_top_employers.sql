@@ -1,19 +1,25 @@
 WITH fct_job_ads AS (
     SELECT * FROM {{ ref('fct_job_ads') }}
+),
+dim_employer AS (
+    SELECT * FROM {{ref('dim_employer')}}
+),
+dim_occupation AS (
+    SELECT * FROM {{ref('dim_occupation')}}
 )
 
 SELECT
-    e.employer_name,
-    e.workplace_region,
-    o.occupation,
-    SUM(ja.vacancies) AS total_vacancies,
-FROM fct_job_ads ja
-JOIN refined.dim_employer e
-    ON ja.employer_id = e.employer_id
-JOIN refined.dim_occupation o
-    ON ja.occupation_id = o.occupation_id
+    dim_employer.employer_name,
+    dim_employer.workplace_region,
+    dim_occupation.occupation,
+    SUM(fct_job_ads.vacancies) AS total_vacancies,
+FROM fct_job_ads 
+JOIN dim_employer 
+    ON dim_employer.employer_id = fct_job_ads.employer_id
+JOIN dim_occupation
+    ON dim_occupation.occupation_id = fct_job_ads.occupation_id
 GROUP BY
-    employer_name,
-    workplace_region,
-    occupation
+    dim_employer.employer_name,
+    dim_employer.workplace_region,
+    dim_occupation.occupation,
 ORDER BY total_vacancies DESC
