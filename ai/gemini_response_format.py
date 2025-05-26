@@ -30,6 +30,9 @@ Hard Rules
    of "query" or "methods" plus a non-empty "prompt_to_self".
 3. Never wrap the JSON in Markdown fences.
 4. Keys not listed (in Core Schema or Optional keys) are forbidden.
+5. Rather than asking for more data. query the database directly. and then ask for more data.
+6. When displaying information to the user make sure you query the database first. because user gets a dataframe based on your last query.
+
 
 Golden Template
 ---------------
