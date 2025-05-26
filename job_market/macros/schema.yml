@@ -1,0 +1,39 @@
+version: 2
+
+macros:
+  - name: capitalize_first_letter
+    description: >
+      Capitalizes the first letter of the input string column and lowercases the rest.
+      Useful for normalizing inconsistent string casing (e.g., 'sTOCKholm' or 'STOCKHOLM' → 'Stockholm').
+    arguments:
+      - name: column_name
+        description: The name of the column whose text will be capitalized.
+        type: string
+
+  - name: generate_schema_name
+    description: >
+      Returns the default schema name unless a custom schema name is provided.
+      Useful for managing environment-specific schema naming conventions.
+    arguments:
+      - name: custom_schema_name
+        description: The user-defined schema name (optional).
+        type: string | null
+      - name: node
+        description: The current dbt node (model, seed, etc.) context.
+        type: object
+
+  - name: normalize_all_strings
+    description: >
+      Applies formatting to a selected list of string columns in a relation:
+      1. Retrieves all columns in the relation.
+      2. Capitalizes only those listed in `columns_to_format`.
+      3. Leaves other columns unchanged.
+      4. Returns a comma-separated string of all column expressions for use in SQL selects.
+    arguments:
+      - name: relation
+        description: The database relation (table or view) to process.
+        type: relation
+      - name: columns_to_format
+        description: List of column names to apply capitalization formatting.
+        type: list[string]
+        default: []
