@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
-from dashboard.utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
-from dashboard.plots import create_pie_chart
+from .utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
+from .plots import create_pie_chart
 
 def summary_page():
     display_dynamic_heading()

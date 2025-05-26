@@ -1,6 +1,6 @@
 import streamlit as st
 from dashboard.utils import get_occupation_field_list, get_occupation_group_list, get_region_list, set_background
-from css import css_code
+from dashboard.css import css_code
 
 st.set_page_config(page_title="Job Market Dashboard", layout="wide")
 
@@ -99,28 +99,28 @@ with st.sidebar:
 # Page 1: Occupation Trends Over Time
 if page_selection == "Summary":
     set_background(page_selection)
-    import summary as sm
+    import dashboard.summary as sm
     sm.summary_page()
 
 # --------------------------------------------------------
 # Page 2: Occupation Trends Over Time
 elif page_selection == "Occupation Trends":
     set_background(page_selection)
-    import occupation_trends as ot
+    import dashboard.occupation_trends as ot
     ot.occupation_trends_page()
 
 # --------------------------------------------------------
 # Page 3: Geographical Coverage
 elif page_selection == "Geographical Coverage":
     set_background(page_selection)
-    import geo_coverage as gc
+    import dashboard.geo_coverage as gc
     gc.geographical_coverage_page()
 
 # --------------------------------------------------------
 # Page 4: Top Employers
 elif page_selection == "Top Occupations & Employers":
     set_background(page_selection)
-    import top_employers as te
+    import dashboard.top_employers as te
     te.top_employers_page()
 
 # --------------------------------------------------------
