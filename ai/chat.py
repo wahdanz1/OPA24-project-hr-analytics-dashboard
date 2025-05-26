@@ -56,7 +56,7 @@ prompt = st.chat_input("Ask a question about the data", key="chat_input")
 if prompt:
     # Add user message
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
+
 
 
     df = st.session_state.df  # Get the current DataFrame from session state
@@ -67,9 +67,9 @@ if prompt:
             # Attempt to fetch data from DB
             df = fetch_data_from_db(response["query"])
             st.session_state.df = df # Store the DataFrame in session state (overwrites previous)
+            st.session_state.messages.append({"role": "assistant", "content": response.get("response", "Query executed successfully.")})
             
-            # Add assistant message (if query was successful)
-            st.session_state.messages.append({"role": "assistant", "content": response["response"]})
+
 
         except Exception as db_error: # <--- THIS IS WHERE THE DATABASE ERROR IS CAUGHT
             # Convert the exception object to a string to inspect its content
@@ -102,7 +102,5 @@ if prompt:
     #     fig = create_plot_from_data(response["graph_data"]) # You'd need a function for this
     #     st.session_state.graph = fig
 
-    # Add assistant message
-    st.session_state.messages.append({"role": "assistant", "content": response["response"]})
     
     st.rerun() # Rerun to update the UI with new messages, df, or graph

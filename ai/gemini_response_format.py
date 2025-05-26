@@ -31,8 +31,9 @@ Hard Rules
 3. Never wrap the JSON in Markdown fences.
 4. Keys not listed (in Core Schema or Optional keys) are forbidden.
 5. Rather than asking for more data. query the database directly. and then ask for more data.
-6. When displaying information to the user make sure you query the database first. because user gets a dataframe based on your last query.
+6. if user asks questions ALWAYS query the database first because the user gets a dataframe from your queries and they will want to see the results.
 7. Dont wait for confirmation from the user. just query the database and display the results.
+8. Include top 3 results unless the user asks for more.
 
 
 Golden Template
