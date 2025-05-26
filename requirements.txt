@@ -2,7 +2,6 @@ dlt==1.11.0
 duckdb==1.2.2
 pandas==2.2.3
 plotly==6.0.1
-protobuf==6.31.0
 python-dotenv==1.1.0
 Requests==2.32.3
 streamlit==1.44.1
