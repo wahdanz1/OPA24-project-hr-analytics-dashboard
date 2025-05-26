@@ -37,7 +37,7 @@ def top_occupation_groups_marimekko(top_n: int = 10):
                         occupation_field,
                         workplace_region,
                         SUM(total_vacancies) AS total_vacancies
-                    FROM marts.mart_top_occupations_dynamic
+                    FROM marts.mart_occupation_group_vacancy_totals
                     WHERE occupation_field = '{occupation_field}'
                         AND workplace_region IN ({region_string})
                         AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)
@@ -109,7 +109,7 @@ def top_occupations_per_municipality():
                 occupation_field,
                 workplace_region,
                 SUM(total_vacancies) AS total_vacancies
-            FROM marts.mart_top_occupations_dynamic
+            FROM marts.mart_occupation_group_vacancy_totals
             WHERE occupation_field IN ({occupation_field_string})
                 AND workplace_region IN ({region_string})
                 AND publication_date BETWEEN (CURRENT_DATE - INTERVAL '{end_day}' DAY)

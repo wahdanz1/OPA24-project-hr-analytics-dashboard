@@ -1,4 +1,4 @@
-WITH stg_job_ads AS (SELECT * FROM {{ source('hr_job_ads', 'stg_ads') }})
+WITH stg_job_ads AS (SELECT * FROM {{ source('job_ads', 'stg_ads') }})
 
 SELECT
     experience_required,

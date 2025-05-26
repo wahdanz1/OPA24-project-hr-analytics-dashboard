@@ -1,12 +1,22 @@
---trends over time Mart
-SELECT publication_date,
-       vacancies,
-       experience_required,
-       occupation,
-       occupation_group,
-       occupation_field
-FROM refined.fct_job_ads
-JOIN refined.dim_aux 
-ON refined.dim_aux.auxiliary_attributes_id = refined.fct_job_ads.aux_id
-JOIN refined.dim_occupation 
-ON refined.dim_occupation.occupation_id = refined.fct_job_ads.occupation_id
+WITH fct AS (
+    SELECT * FROM {{ ref('fct_job_ads') }}
+),
+
+dim_aux AS (
+    SELECT * FROM {{ ref('dim_aux') }}
+),
+
+dim_occupation AS (
+    SELECT * FROM {{ ref('dim_occupation') }}
+)
+
+SELECT 
+    fct.publication_date,
+    fct.vacancies,
+    aux.experience_required,
+    occ.occupation,
+    occ.occupation_group,
+    occ.occupation_field
+FROM fct
+JOIN dim_aux aux ON aux.auxiliary_attributes_id = fct.aux_id
+JOIN dim_occupation occ ON occ.occupation_id = fct.occupation_id

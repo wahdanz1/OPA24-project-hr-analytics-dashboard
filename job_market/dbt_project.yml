@@ -28,7 +28,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 
 models:
-  hr_project:
+  job_market:
     +materialized: view 
   
     src: 
@@ -39,9 +39,6 @@ models:
 
     fct:
       +schema: refined
-
-    int:
-      +materialized: ephemeral
 
     marts:
       +schema: marts
