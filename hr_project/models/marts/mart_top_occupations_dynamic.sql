@@ -7,7 +7,7 @@ job_ads_enriched AS (
         ja.publication_date,
         e.workplace_region,
         e.workplace_municipality,
-        o.occupation,
+        o.occupation_group,
         o.occupation_field,
         ja.vacancies
     FROM fct_job_ads ja
@@ -23,7 +23,7 @@ SELECT
     publication_date,
     workplace_region,
     workplace_municipality,
-    occupation,
+    occupation_group,
     occupation_field,
     SUM(vacancies) AS total_vacancies
 FROM job_ads_enriched
@@ -31,5 +31,5 @@ GROUP BY
     publication_date,
     workplace_region,
     workplace_municipality,
-    occupation,
+    occupation_group,
     occupation_field

@@ -5,13 +5,11 @@ from dashboard.plots import create_vertical_bar_chart
 
 def top_employers_page():
     display_dynamic_heading()
-
     top_occupation_per_field()
-    st.divider()
 
 def top_occupation_per_field():
     # Get filters from sidebar
-    occupation_field_string, occupation_group_string, limit_value, start_day, end_day = get_sidebar_filters()
+    occupation_field_string, occupation_group_string, limit_value, start_day, end_day, _, region_string = get_sidebar_filters()
 
     # Main top employers query
     query1 = f"""
@@ -60,10 +58,17 @@ def top_occupation_per_field():
     # Generate list of available occupations
     occupation_options = data1['occupation'].unique().tolist()
     
-    # Occupation selection for the graph
+    # Ensure previously selected occupations are still valid
+    valid_previous_selections = [
+        occ for occ in st.session_state.get("occupation_selectbox", [])
+        if occ in occupation_options
+    ]
+
+    # Multiselect
     selected_occupations = st.multiselect(
-        "Select one or more occupation to explore details:",
+        "Select one or more occupations to explore details:",
         options=occupation_options,
+        default=valid_previous_selections,
         key="occupation_selectbox",
     )
 
@@ -72,6 +77,7 @@ def top_occupation_per_field():
         SELECT
             *
         FROM marts.mart_top_employers
+        WHERE workplace_region IN ({region_string})
     """
     employer_data = fetch_data_from_db(employer_query)
     
@@ -95,7 +101,11 @@ def top_occupation_per_field():
 
         # Top 5 employers
         with col3:
-            st.write("### Något kul här kanske?")
+            avg_vacancies_per_employer = (
+                total_vacancies / num_employers
+                if num_employers > 0 else 0
+            )
+            st.metric("Avg Vacancies per Employer", round(avg_vacancies_per_employer, 1))
     
         # Limit by top 10 before plotting to ensure reasonable chart width
         limited_employer_data = filtered_employer_data.head(10)
@@ -110,6 +120,7 @@ def top_occupation_per_field():
             title=f"Top employers per region for selected occupation(s)",
             color_column='workplace_region',
             hover_data={"total_vacancies": True,
+                        "occupation": True,
                         "employer_name": False,
                         "workplace_region": True},
             text="total_vacancies",
