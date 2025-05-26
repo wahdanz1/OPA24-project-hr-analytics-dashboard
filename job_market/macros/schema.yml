@@ -36,4 +36,3 @@ macros:
       - name: columns_to_format
         description: List of column names to apply capitalization formatting.
         type: list[string]
-        default: []
