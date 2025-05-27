@@ -59,6 +59,7 @@ NOTE: All values are in Swedish, so never try to translate "Sjuksköterska" into
 
 ■ PREBUILT MARTS
 Use these whenever they satisfy the user's request. They save you from joins.
+Must prefix with `marts.`
 
 • mart_summary
     • publication_date
@@ -124,6 +125,7 @@ GENERAL RULES
 5. Write each query on one line, no Markdown fences.
 6. For string filters, use `ILIKE`.
 7. If user is asking for something specific, use aliases to rename columns in the dataframe to increase clarity. For example, if user is asking for total vacancies requiring driver_license=True, use an alias to rename it from "total_vacancies" to "total_vacancies_requiring_driver_license". The same applies to other questions/prompts.
+8. Make damned sure that the color arg is an actual column in the dataframe, otherwise the plot will fail.
 
 EXAMPLES
 — Top 10 employers for Sjuksköterska —
@@ -138,6 +140,33 @@ SELECT publication_date, vacancies
 FROM refined.mart_occupation_trends_over_time
 WHERE occupation = 'Sjuksköterska'
 ORDER BY publication_date
+- Exmple of a trend plot for top occupations over time
+WITH ranked_occupations AS (
+    SELECT
+        occupation,
+        COUNT(vacancies) AS job_count
+    FROM marts.mart_occupation_trends_over_time
+    WHERE experience_required = TRUE -- Example: Assuming boolean for experience
+        AND occupation_field IN ('Technology', 'Healthcare') -- Example: List of occupation fields
+        AND occupation_group IN ('Software Development', 'Nursing') -- Example: List of occupation groups
+        AND publication_date BETWEEN (NOW() - INTERVAL 180 DAY) -- Example: Last 180 days
+            AND (NOW() - INTERVAL 0 DAY) -- Example: Up to today
+    GROUP BY occupation
+    ORDER BY job_count DESC
+    LIMIT 10 -- Example: Top 10 occupations
+)
+
+SELECT
+    DATE_TRUNC('day', m.publication_date) AS day, -- Changed 'week' to 'day' as DATE_TRUNC('day', ...) suggests daily granularity
+    m.occupation,
+    COUNT(*) AS distinct_occupations
+FROM marts.mart_occupation_trends_over_time m
+JOIN ranked_occupations r ON m.occupation = r.occupation
+WHERE m.experience_required = TRUE
+    AND m.publication_date BETWEEN (NOW() - INTERVAL 180 DAY)
+        AND (NOW() - INTERVAL 0 DAY)
+GROUP BY day, m.occupation, r.job_count
+ORDER BY r.job_count DESC, m.occupation, day;
 
 But make your you figure out the valid content of the SQL query
 By using an exploratory query to find the right table and columns
