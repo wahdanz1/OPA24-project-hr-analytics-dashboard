@@ -39,15 +39,6 @@ STEP 2 • Output JSON
 {
   "response": "<short human summary>",
   "query": "<the one-line SQL>",
-  "methods": null,
-  "prompt_to_self": "PLOT",
-  "stop": false
-}
-
-STEP 3 • PLOT
-{
-  "response": "Here is your chart.",
-  "query": null,
   "methods": [
     {
       "name": "<choose appropriate create_*_chart>",
@@ -56,17 +47,20 @@ STEP 3 • PLOT
         "x_value": "<x column>",
         "y_value": "<y column>",
         "title": "<chart title>"
+        "color_column": "<one of the columns in the dataframe>"
+        "x_label": "<x-axis label>",
+        "y_label": "<y-axis label>"
       }
-    }
-  ],
-  "prompt_to_self": null,
-  "stop": true
 }
 
+
+
 HARD RULES
-• Only one SQL in "query" per JSON.  
-• "methods" must be null until final PLOT step.  
+• Only one SQL in "query" per JSON.   s
 • Only chart helpers in "methods".  
 • Never wrap JSON in fences.  
-• Never invent tables or columns.
+• NEVER invent tables or columns.
+  NEVER INVENT TABLES OR COLUMNS.
+    NEVER INVENT TABLES OR COLUMNS.
+    NEVER INVENT TABLES OR COLUMNS.
 """
