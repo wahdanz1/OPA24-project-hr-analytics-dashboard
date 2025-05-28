@@ -23,7 +23,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
 # Import necessary functions/variables
 from pipeline.resources import jobsearch_source
-from config import db_path
+from config import db_path, dbt_path,profiles_dir
 from pipeline.utils import make_params_list
 
 
@@ -43,3 +43,20 @@ dlt_resource = DagsterDltResource()
 )
 def job_ads_dlt_asset(context: dg.AssetExecutionContext, dlt: DagsterDltResource):
     yield from dlt.run(context=context)
+
+
+############################
+#         dbt asset        #
+############################
+
+dbt_project = DbtProject(
+    project_dir = dbt_path,
+    profiles_dir = profiles_dir )
+
+dbt_resource = DbtCliResource(project_dir = dbt_project)
+
+dbt_project.prepare_if_dev()
+
+@dbt_assets(manifest = dbt_project.manifest_path)
+def dbt_models(context: dg.AssetExecutionContext, dbt: DbtCliResource):
+    yield from dbt.cli(["build"],context = context).stream()
