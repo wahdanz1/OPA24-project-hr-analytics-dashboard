@@ -36,7 +36,6 @@ dlt_resource = DagsterDltResource()
         destination=dlt.destinations.duckdb(str(db_path)),
         dataset_name="staging",
     ),
-    name="dlt_jobsearch_source_jobsearch_resource",
 )
 def job_ads_dlt_asset(context: dg.AssetExecutionContext, dlt: DagsterDltResource):
     yield from dlt.run(context=context)
@@ -56,7 +55,6 @@ dbt_project.prepare_if_dev()
 
 @dbt_assets(
     manifest = dbt_project.manifest_path,
-
     )
 def dbt_models(context: dg.AssetExecutionContext, dbt: DbtCliResource):
     yield from dbt.cli(["build"],context = context).stream()
