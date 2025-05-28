@@ -1,9 +1,9 @@
 from datetime import datetime,timedelta
 import os
-from config import db_path
+from config import db_path, occupation_field_dict
 
 # Returns X past days since datetime.now() in a list format
-# 183 days for new run and 
+# 60 days for new run and 
 # X days where X is time since last update
 def get_past_days(past_days : int):
     today = datetime.now()
@@ -17,7 +17,25 @@ def get_past_days(past_days : int):
     return return_list
 
 
-    
+def make_params_list(day_range):
+    from datetime import timedelta
+    day_list = get_past_days(day_range)
+    params_list = []
+    print("Building params list...")
+    for field_name, field_code in occupation_field_dict.items():
+        print(f"Occupation field {field_name}:")
+        for day in day_list:
+            print(f"{day}")
+            tomorrow = day + timedelta(days=1)
+            params = {
+                "occupation-field": field_code,
+                "published-before": tomorrow.strftime("%Y-%m-%dT00:00:00"),
+                "published-after": day.strftime("%Y-%m-%dT00:00:00"),
+                "limit": 100,
+                "offset": 0,
+            }
+            params_list.append(params)
+    return params_list
 
 
 def delete_duckdb_file():

@@ -1,7 +1,7 @@
 import dlt
 from datetime import timedelta
-from .resources import jobsearch_resource
-from .utils import delete_duckdb_file, get_past_days
+from resources import jobsearch_resource
+from utils import delete_duckdb_file, get_past_days, make_params_list
 
 # To be able to import config.py and access its variables
 import sys
@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 # Import variables from config.py
-from config import db_path, table_name, occupation_field_dict
+from config import db_path, table_name
 
 
 # ---------- PIPELINE FUNCTIONS ----------
@@ -28,31 +28,20 @@ def create_pipeline():
 def run_pipeline(table_name , is_first_time:bool):
     pipeline = create_pipeline()
     if is_first_time:
-        day_list = get_past_days(60)
+        day_range = 60
         delete_duckdb_file()
         print("Creating new pipeline...")
     else:
-        day_list = get_past_days(3) 
+        day_range = 2 
         print("Updating pipeline...")
 
-    # Loop through each occupation field in the list
-    for field_name,field_code in occupation_field_dict.items():
-            print(f"Loading {field_name}")
-            for day in day_list:
-                tomorrow = day + timedelta(days=1)
+    params = make_params_list(day_range)
+    print(f"Fetching data...")
+    pipeline.run(
+        jobsearch_resource(params=params),
+        table_name=table_name
+    )
 
-                params = {
-                    "occupation-field": field_code,
-                    "published-before":tomorrow.strftime("%Y-%m-%dT00:00:00"),
-                    "published-after":day.strftime("%Y-%m-%dT00:00:00"),
-                    "limit": 100,
-                    "offset": 0,
-                }
-                print(f"Loading {day}")
-                pipeline.run(
-                    jobsearch_resource(params=params),
-                    table_name=table_name
-                )
     print("Completed running the pipeline!")
 
 # --- For testing purposes ---
