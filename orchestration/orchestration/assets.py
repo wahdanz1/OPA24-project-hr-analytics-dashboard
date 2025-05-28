@@ -16,11 +16,6 @@ from pathlib import Path
 # Add the parent directory (root, 2 levels up) to sys.path
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
-
-################################
-#        Param-builder         #
-################################
-
 # Import necessary functions/variables
 from pipeline.resources import jobsearch_source
 from config import db_path, dbt_path,profiles_dir
