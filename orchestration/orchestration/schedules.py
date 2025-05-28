@@ -1,5 +1,5 @@
 import dagster as dg
-from jobs import job_dlt
+from .jobs import job_dlt
 
 ############################
 #         Schedules        #
