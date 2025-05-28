@@ -16,6 +16,10 @@ occupation_field_dict = {
 
 working_directory = Path(__file__).resolve().parent
 
-db_filename = "job_ads.duckdb" # Database file name
 dbt_folder = "job_market" # Database file directory
+dbt_path = working_directory / dbt_folder  # Path to the database folder
+db_filename = "job_ads.duckdb" # Database file name
 db_path = working_directory / dbt_folder / db_filename  # Full path to the database file
+
+profiles_dir = Path.home() / ".dbt"
+  
