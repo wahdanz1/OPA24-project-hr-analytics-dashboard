@@ -22,6 +22,7 @@ with st.sidebar:
             "Occupation Trends",
             "Geographical Coverage",
             "Top Occupations & Employers",
+            "Interactive Assistant"
         ),
         key="page_selection",
     )
@@ -82,6 +83,7 @@ with st.sidebar:
         key="sidebar_requires_experience"
     )
 
+
     # ----- DBT Documentation-link -----
     st.markdown(
     """
@@ -122,7 +124,9 @@ elif page_selection == "Top Occupations & Employers":
     set_background(page_selection)
     import dashboard.top_employers as te
     te.top_employers_page()
-
+elif page_selection == "Interactive Assistant":
+    from ai.chat import open_chat
+    open_chat()
 # --------------------------------------------------------
 else:
     st.write("Please select a page from the sidebar.")
