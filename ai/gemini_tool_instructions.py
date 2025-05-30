@@ -28,7 +28,7 @@ STEP 1 • Build SQL
   • AD-HOC version:
       SELECT d.<field> AS category, AGG(f.<metric>) AS value
       FROM refined.fct_job_ads f
-      JOIN refined.dim_<X> d ON f.<fk> = d.<pk>
+      JOIN refined.dim_<X> d ON f.<fk> = d.<pk> (X = occupation OR employer OR job_details OR aux, and fk = X_id (unless dim_aux, then it's auxillary_attributes_id))
       WHERE lower(d.<field>) = '<value>'
       GROUP BY d.<field>
       ORDER BY value DESC
