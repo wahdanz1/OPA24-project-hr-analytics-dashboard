@@ -30,8 +30,8 @@ from pipeline.utils import make_params_list
 dlt_resource = DagsterDltResource()
 
 @dlt_assets(
-    dlt_source=jobsearch_source(make_params_list(day_range=3)),
-    dlt_pipeline=dlt.pipeline(
+    dlt_source = jobsearch_source(make_params_list(day_range=3)),
+    dlt_pipeline = dlt.pipeline(
         pipeline_name="job_ads_pipeline",
         destination=dlt.destinations.duckdb(str(db_path)),
         dataset_name="staging",

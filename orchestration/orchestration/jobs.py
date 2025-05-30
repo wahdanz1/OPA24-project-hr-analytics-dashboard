@@ -1,15 +1,16 @@
-import dagster as dg 
+import dagster as dg
+from .assets import dbt_models, job_ads_dlt_asset
 
 ########################
 #         Jobs         #
 ########################
 
-job_dlt = dg.define_asset_job(
+dlt_job = dg.define_asset_job(
     name="dlt_job",
-    selection = dg.AssetSelection.keys("dlt_jobsearch_source_jobsearch_resource"),
+    selection = dg.AssetSelection.assets(*job_ads_dlt_asset.keys),
 )
 
-job_dbt = dg.define_asset_job(
+dbt_job = dg.define_asset_job(
     name ="dbt_job",
-    selection = dg.AssetSelection.all()
+    selection = dg.AssetSelection.assets(*dbt_models.keys)
 )
