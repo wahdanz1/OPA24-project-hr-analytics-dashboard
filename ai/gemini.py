@@ -35,6 +35,9 @@ class GeminiHandler:
             this is the response format: {get_response_format()}
             this is the history of the conversation: {history}
             if there is a csv file, please use it to answer the question: {csv_string if csv_string else "No CSV file provided"}
+
+            Please provide a JSON response with the required keys as specified in the response format.
+            Do not include any Markdown fences or additional commentary outside the JSON object.
             """
         )
 
