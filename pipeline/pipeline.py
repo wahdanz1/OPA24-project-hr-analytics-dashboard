@@ -35,10 +35,10 @@ def run_pipeline(table_name , is_first_time:bool):
         day_range = 2 
         print("Updating pipeline...")
 
-    params = make_params_list(day_range)
+    params_list = make_params_list(day_range)
     print(f"Fetching data...")
     pipeline.run(
-        jobsearch_resource(params=params),
+        jobsearch_resource(params_list=params_list),
         table_name=table_name
     )
 
