@@ -21,11 +21,11 @@ def make_params_list(day_range):
     from datetime import timedelta
     day_list = get_past_days(day_range)
     params_list = []
-    print("Building params list...")
+    # print("Building params list...")
     for field_name, field_code in occupation_field_dict.items():
-        print(f"Occupation field {field_name}:")
+        # print(f"Occupation field {field_name}:")
         for day in day_list:
-            print(f"{day}")
+            # print(f"{day}")
             tomorrow = day + timedelta(days=1)
             params = {
                 "occupation-field": field_code,
