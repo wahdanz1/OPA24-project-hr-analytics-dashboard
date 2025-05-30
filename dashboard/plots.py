@@ -8,7 +8,7 @@ def create_horizontal_bar_chart(data,**kwargs):
     x_label = kwargs.pop("x_label", "")
     y_label = kwargs.pop("y_label", "")
     title = kwargs.pop("title", "")
-    color_column = kwargs.pop("color_column", "")
+    color_column = kwargs.pop("color_column", y_value)
     margin = kwargs.pop("margin", dict(l=0, r=0, t=0, b=0))
     hover_template = kwargs.pop("hover_template", "")
 
@@ -59,7 +59,7 @@ def create_vertical_bar_chart(data,**kwargs):
     x_label = kwargs.pop("x_label", "")
     y_label = kwargs.pop("y_label", "")
     title = kwargs.pop("title", "")
-    color_column = kwargs.pop("color_column", "")
+    color_column = kwargs.pop("color_column", y_value)
     margin = kwargs.pop("margin", dict(l=50, r=50, t=50, b=40))
     showticklabels = kwargs.pop("showticklabels", True)
     barmode = kwargs.pop("barmode", "stack")
@@ -109,7 +109,7 @@ def create_line_chart(data,**kwargs):
     x_label = kwargs.pop("x_label", "")
     y_label = kwargs.pop("y_label", "")
     title = kwargs.pop("title", "")
-    color_column = kwargs.pop("color_column", "")
+    color_column = kwargs.pop("color_column", y_value)
 
     fig = px.line(
         data,
