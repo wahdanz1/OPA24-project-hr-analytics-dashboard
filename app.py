@@ -125,6 +125,9 @@ elif page_selection == "Top Occupations & Employers":
     set_background(page_selection)
     import dashboard.top_employers as te
     te.top_employers_page()
+
+# --------------------------------------------------------
+# Page 5: Interactive Assistant
 elif page_selection == "Interactive Assistant":
     from ai.chat import open_chat
     open_chat()
