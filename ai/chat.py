@@ -37,16 +37,16 @@ with col1:
 with col2:
     # Only display Data Preview if the DataFrame is not empty
     if not st.session_state.df.empty: # FIX: Check if DataFrame is actually not empty
-        with st.container(height=540, border=True): # You can adjust the height as needed
-            st.write("### Data Preview")
-            # st.session_state.get("df") is redundant here, st.session_state.df is fine
-            st.dataframe(st.session_state.df) # Streamlit's default dataframe will handle its own scrolling if it's too big
-            # Only display Graph Preview if a graph has been set
+        graph_tab, data_tab = st.tabs(["Graph Preview", "Data Preview"])
+        with graph_tab:
+            # Display the graph if it exists
             if st.session_state.graph: # This condition will now work if graph is set to a truthy value
-                st.write("### Graph Preview")
-                with st.container(height=540, border=True):
-                    # Display the graph if it exists
-                    st.plotly_chart(st.session_state.graph, use_container_width=True)
+                st.plotly_chart(st.session_state.graph, use_container_width=True)
+        with data_tab:
+            # Display the DataFrame preview
+            st.write("### Data Preview")
+            st.dataframe(st.session_state.df) # Streamlit's default dataframe will handle its own scrolling if it's too big
+
     
 
 # Chat input
