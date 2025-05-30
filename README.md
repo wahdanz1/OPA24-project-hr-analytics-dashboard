@@ -36,7 +36,7 @@ Now, you are given a task to create a data pipeline for the team of talent acqui
 2. **Navigate to the project root:**
     ```git bash
     cd OPA24-project-hr-analytics-dashboard
-3. **Create virtual environment (with ```uv venv```):**
+3. **Create virtual environment (with `uv venv`):**
     ```git bash
     uv venv .venv
 4. **Activate virtual environment:**
@@ -44,11 +44,11 @@ Now, you are given a task to create a data pipeline for the team of talent acqui
     .venv\scripts\activate (Windows)
     OR
     source source .venv/bin/activate (MacOS/Linux)
-5. **Install dependencies from the ```requirements.lock```-file:**
+5. **Install dependencies from the `requirements.lock`-file:**
     ```git bash
     uv pip install -r requirements.lock.txt
-6. **Run the script in the project root called ```first_time_run.py```**
-    > ⚠️ Do note that this process might take some time - the first pipeline-run will fetch data from 2 months back up until present day.
+6. **Run the `first_time_run.py`-script in the `scripts/` directory**
+    > ⚠️ Do note that this process might take some time - the first pipeline-run will fetch data from 2 months back up until present day, followed by generate dbt docs.
 7. **Run the Streamlit Dashboard with the following command (from project root):**
     ```git bash
     streamlit run app.py
@@ -106,8 +106,8 @@ More details and test results can be found in the <a href="https://wahdanz1.gith
 <br>
 
 ## Credits
-<a href="https://github.com/wahdanz1" target="_blank">wahdanz1</a>
+<a href="https://github.com/wahdanz1" target="_blank">`wahdanz1`</a>
 
-<a href="https://github.com/Remmold" target="_blank">Remmold</a>
+<a href="https://github.com/Remmold" target="_blank">`Remmold`</a>
 
-<a href="https://github.com/Oskara1209" target="_blank">Oskara1209</a>
+<a href="https://github.com/Oskara1209" target="_blank">`Oskara1209`</a>
