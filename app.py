@@ -1,14 +1,8 @@
 import streamlit as st
-from dashboard.utils import get_occupation_field_list, get_occupation_group_list, get_region_list, set_background
-from dashboard.css import css_code
+from dashboard.utils import get_occupation_field_list, get_occupation_group_list, get_region_list, set_background, build_css_code
+# from dashboard.css import css_code
 
 st.set_page_config(page_title="Job Market Dashboard", layout="wide")
-
-# Retrieve css code and inject it into the dashboard html
-st.markdown(
-    css_code,
-    unsafe_allow_html=True,
-)
 
 with st.sidebar:
     # Sidebar title
@@ -93,6 +87,13 @@ with st.sidebar:
     """,
     unsafe_allow_html=True
     )
+
+built_css_code = build_css_code(page_selection)
+# Retrieve css code and inject it into the dashboard html
+st.markdown(
+    built_css_code,
+    unsafe_allow_html=True,
+)
 
 ################################################
 #              Page if-statement               #
