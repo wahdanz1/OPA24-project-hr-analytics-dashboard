@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
-from gemini_database_access import get_database_instructions
-from gemini_tool_instructions import get_tool_instructions
-from gemini_personality import get_statistical_consultant_personality
-from gemini_response_format import get_response_format
+from .gemini_database_access import get_database_instructions
+from .gemini_tool_instructions import get_tool_instructions
+from .gemini_personality import get_statistical_consultant_personality
+from .gemini_response_format import get_response_format
 import os
 import google.genai as genai    
 from pathlib import Path

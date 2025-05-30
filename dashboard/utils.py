@@ -237,3 +237,16 @@ def set_background(current_page):
         """,
         unsafe_allow_html=True
     )
+
+# Method for building CSS-code dyamically (to not style certain elements on certain pages)
+def build_css_code(current_page):
+    from .css import prefix, header_styling, container_styling, element_container_styling, button_styling, suffix
+    css_code = prefix
+    if current_page != "Interactive Assistant":
+        css_code += header_styling + container_styling + element_container_styling + button_styling
+    else:
+        css_code += header_styling + element_container_styling + button_styling
+
+    css_code += suffix
+
+    return css_code
