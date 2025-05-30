@@ -135,6 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.tmp_*
 
 # Spyder project settings
 .spyderproject
@@ -175,6 +176,9 @@ cython_debug/
 
 # DuckDB 
 *.duckdb
+
+# Dagster
+orchestration_tests/
 
 # # Github Pages (docs/)
 # # Ignore everything in docs EXCEPT tracked files
