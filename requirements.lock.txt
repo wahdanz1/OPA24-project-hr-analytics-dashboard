@@ -16,48 +16,74 @@ antlr4-python3-runtime==4.13.2
 anyio==4.9.0
     # via
     #   google-genai
+    #   gql
     #   httpx
+    #   starlette
+    #   watchfiles
 attrs==25.3.0
     # via
     #   jsonschema
     #   referencing
 babel==2.17.0
     # via agate
+backoff==2.2.1
+    # via gql
 blinker==1.9.0
     # via streamlit
 cachetools==5.5.2
     # via
     #   google-auth
     #   streamlit
-certifi==2025.1.31
+certifi==2025.4.26
     # via
     #   httpcore
     #   httpx
     #   requests
-charset-normalizer==3.4.1
+charset-normalizer==3.4.2
     # via requests
 click==8.1.8
     # via
     #   dagster
+    #   dagster-webserver
     #   dbt-core
     #   dbt-semantic-interfaces
     #   dlt
     #   streamlit
+    #   typer
+    #   uvicorn
 colorama==0.4.6
     # via
     #   click
     #   dbt-common
     #   tqdm
+    #   uvicorn
 coloredlogs==14.0
     # via dagster
 daff==1.4.2
     # via dbt-core
-dagster==1.10.11
+dagit==1.10.17
     # via -r requirements.txt
-dagster-pipes==1.10.11
+dagster==1.10.17
+    # via
+    #   -r requirements.txt
+    #   dagster-dbt
+    #   dagster-dlt
+    #   dagster-graphql
+    #   dagster-webserver
+dagster-dbt==0.26.17
+    # via -r requirements.txt
+dagster-dlt==0.26.17
+    # via -r requirements.txt
+dagster-graphql==1.10.17
+    # via dagster-webserver
+dagster-pipes==1.10.17
     # via dagster
-dagster-shared==0.26.11
+dagster-shared==0.26.17
     # via dagster
+dagster-webserver==1.10.17
+    # via
+    #   -r requirements.txt
+    #   dagit
 dbt-adapters==1.15.3
     # via
     #   dbt-core
@@ -70,12 +96,13 @@ dbt-common==1.25.0
 dbt-core==1.9.4
     # via
     #   -r requirements.txt
+    #   dagster-dbt
     #   dbt-duckdb
 dbt-duckdb==1.9.3
     # via -r requirements.txt
 dbt-extractor==0.6.0
     # via dbt-core
-dbt-protos==1.0.315
+dbt-protos==1.0.317
     # via
     #   dbt-adapters
     #   dbt-common
@@ -84,7 +111,9 @@ dbt-semantic-interfaces==0.7.4
 deepdiff==7.0.1
     # via dbt-common
 dlt==1.10.0
-    # via -r requirements.txt
+    # via
+    #   -r requirements.txt
+    #   dagster-dlt
 docker-py==1.10.6
     # via -r requirements.txt
 docker-pycreds==0.4.0
@@ -99,7 +128,7 @@ exceptiongroup==1.3.0
     # via anyio
 filelock==3.18.0
     # via dagster
-fsspec==2025.3.2
+fsspec==2025.5.1
     # via
     #   dlt
     #   universal-pathlib
@@ -111,10 +140,21 @@ gitpython==3.1.44
     #   streamlit
 giturlparse==0.12.0
     # via dlt
-google-auth==2.40.1
+google-auth==2.40.2
     # via google-genai
 google-genai==1.15.0
     # via -r requirements.txt
+gql==3.5.3
+    # via dagster-graphql
+graphene==3.4.3
+    # via dagster-graphql
+graphql-core==3.2.6
+    # via
+    #   gql
+    #   graphene
+    #   graphql-relay
+graphql-relay==3.2.0
+    # via graphene
 greenlet==3.2.2
     # via sqlalchemy
 grpcio==1.71.0
@@ -124,22 +164,27 @@ grpcio==1.71.0
 grpcio-health-checking==1.71.0
     # via dagster
 h11==0.16.0
-    # via httpcore
-hexbytes==1.3.0
+    # via
+    #   httpcore
+    #   uvicorn
+hexbytes==1.3.1
     # via dlt
 httpcore==1.0.9
     # via httpx
+httptools==0.6.4
+    # via uvicorn
 httpx==0.28.1
     # via google-genai
 humanfriendly==10.0
     # via coloredlogs
-humanize==4.12.2
+humanize==4.12.3
     # via dlt
 idna==3.10
     # via
     #   anyio
     #   httpx
     #   requests
+    #   yarl
 importlib-metadata==6.11.0
     # via dbt-semantic-interfaces
 isodate==0.6.1
@@ -150,13 +195,14 @@ jinja2==3.1.6
     # via
     #   altair
     #   dagster
+    #   dagster-dbt
     #   dbt-common
     #   dbt-core
     #   dbt-semantic-interfaces
     #   pydeck
 jsonpath-ng==1.7.0
     # via dlt
-jsonschema==4.23.0
+jsonschema==4.24.0
     # via
     #   altair
     #   dbt-common
@@ -165,7 +211,7 @@ jsonschema-specifications==2025.4.1
     # via jsonschema
 leather==0.4.0
     # via agate
-makefun==1.15.6
+makefun==1.16.0
     # via dlt
 mako==1.3.10
     # via alembic
@@ -186,12 +232,16 @@ more-itertools==10.7.0
     # via dbt-semantic-interfaces
 msgpack==1.1.0
     # via mashumaro
-narwhals==1.36.0
+multidict==6.4.4
+    # via yarl
+narwhals==1.41.0
     # via
     #   altair
     #   plotly
 networkx==3.4.2
-    # via dbt-core
+    # via
+    #   dagster-dbt
+    #   dbt-core
 numpy==2.2.5
     # via
     #   -r requirements.txt
@@ -200,11 +250,14 @@ numpy==2.2.5
     #   streamlit
 ordered-set==4.1.0
     # via deepdiff
-orjson==3.10.16
-    # via dlt
+orjson==3.10.18
+    # via
+    #   dagster-dbt
+    #   dlt
 packaging==24.2
     # via
     #   altair
+    #   dagster-dbt
     #   dagster-shared
     #   dbt-core
     #   dlt
@@ -229,10 +282,12 @@ pillow==11.2.1
     # via streamlit
 plotly==6.0.1
     # via -r requirements.txt
-pluggy==1.5.0
+pluggy==1.6.0
     # via dlt
 ply==3.11
     # via jsonpath-ng
+propcache==0.3.1
+    # via yarl
 protobuf==5.29.4
     # via
     #   dagster
@@ -244,7 +299,7 @@ protobuf==5.29.4
     #   streamlit
 psutil==7.0.0
     # via dagster
-pyarrow==19.0.1
+pyarrow==20.0.0
     # via streamlit
 pyasn1==0.6.1
     # via
@@ -252,12 +307,12 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.2
     # via google-auth
-pydantic==2.11.3
+pydantic==2.11.5
     # via
     #   dagster-shared
     #   dbt-semantic-interfaces
     #   google-genai
-pydantic-core==2.33.1
+pydantic-core==2.33.2
     # via pydantic
 pydeck==0.9.1
     # via streamlit
@@ -269,12 +324,14 @@ python-dateutil==2.9.0.post0
     # via
     #   dbt-common
     #   dbt-semantic-interfaces
+    #   graphene
     #   pandas
     #   pendulum
 python-dotenv==1.1.0
     # via
     #   -r requirements.txt
     #   dagster
+    #   uvicorn
 python-slugify==8.0.4
     # via agate
 pytimeparse==1.1.8
@@ -296,6 +353,7 @@ pyyaml==6.0.2
     #   dbt-core
     #   dbt-semantic-interfaces
     #   dlt
+    #   uvicorn
 referencing==0.36.2
     # via
     #   jsonschema
@@ -303,22 +361,30 @@ referencing==0.36.2
 requests==2.32.3
     # via
     #   dagster
+    #   dagster-dbt
+    #   dagster-graphql
     #   dbt-common
     #   dbt-core
     #   dlt
     #   docker-py
     #   google-genai
+    #   gql
+    #   requests-toolbelt
     #   snowplow-tracker
     #   streamlit
-requirements-parser==0.11.0
+requests-toolbelt==1.0.0
+    # via gql
+requirements-parser==0.13.0
     # via dlt
 rich==14.0.0
     # via
     #   dagster
+    #   dagster-dbt
     #   rich-argparse
-rich-argparse==1.7.0
+    #   typer
+rich-argparse==1.7.1
     # via dlt
-rpds-py==0.24.0
+rpds-py==0.25.1
     # via
     #   jsonschema
     #   referencing
@@ -326,11 +392,12 @@ rsa==4.9.1
     # via google-auth
 semver==3.0.4
     # via dlt
-setuptools==79.0.1
+setuptools==80.9.0
     # via
     #   dagster
     #   dlt
-    #   types-setuptools
+shellingham==1.5.4
+    # via typer
 simplejson==3.20.1
     # via dlt
 six==1.17.0
@@ -350,10 +417,18 @@ sqlalchemy==2.0.41
     # via
     #   alembic
     #   dagster
-sqlglot==26.16.0
-    # via dlt
+sqlglot==26.22.0
+    # via
+    #   dagster-dbt
+    #   dlt
+sqlglotrs==0.4.2
+    # via sqlglot
 sqlparse==0.5.3
     # via dbt-core
+starlette==0.46.2
+    # via
+    #   dagster-graphql
+    #   dagster-webserver
 streamlit==1.44.1
     # via -r requirements.txt
 structlog==25.3.0
@@ -373,15 +448,17 @@ tomli==2.2.1
     #   alembic
     #   dagster
 tomlkit==0.13.2
-    # via dlt
+    # via
+    #   dagster-shared
+    #   dlt
 toposort==1.10
     # via dagster
-tornado==6.4.2
+tornado==6.5.1
     # via streamlit
 tqdm==4.67.1
     # via dagster
-types-setuptools==79.0.0.20250422
-    # via requirements-parser
+typer==0.16.0
+    # via dagster-dbt
 typing-extensions==4.13.2
     # via
     #   alembic
@@ -395,7 +472,9 @@ typing-extensions==4.13.2
     #   dlt
     #   exceptiongroup
     #   google-genai
+    #   graphene
     #   mashumaro
+    #   multidict
     #   pydantic
     #   pydantic-core
     #   referencing
@@ -404,8 +483,10 @@ typing-extensions==4.13.2
     #   sqlalchemy
     #   streamlit
     #   structlog
+    #   typer
     #   typing-inspection
-typing-inspection==0.4.0
+    #   uvicorn
+typing-inspection==0.4.1
     # via pydantic
 tzdata==2025.2
     # via
@@ -418,15 +499,23 @@ universal-pathlib==0.2.6
     # via dagster
 urllib3==2.4.0
     # via requests
+uvicorn==0.34.2
+    # via dagster-webserver
 watchdog==5.0.3
     # via
     #   dagster
     #   streamlit
+watchfiles==1.0.5
+    # via uvicorn
 websocket-client==1.8.0
     # via docker-py
 websockets==15.0.1
-    # via google-genai
+    # via
+    #   google-genai
+    #   uvicorn
 win-precise-time==1.4.2
     # via dlt
-zipp==3.21.0
+yarl==1.20.0
+    # via gql
+zipp==3.22.0
     # via importlib-metadata

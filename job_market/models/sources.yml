@@ -4,3 +4,6 @@ sources:
     tables: 
       - name: stg_ads
         identifier: job_ads
+        meta:
+          dagster:
+            asset_key: ["dlt_jobsearch_source_jobsearch_resource"]
