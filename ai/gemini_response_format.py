@@ -34,9 +34,11 @@ Hard Rules
 7. Be charitable and asume the user doesnt know exactly what they want. so try to figure it out for them.
 
 
+
 Golden Template
 ---------------
 {
+
  "response": "<short human summary>",
   "query": "<the one-line SQL>",
   "methods": [
@@ -44,13 +46,14 @@ Golden Template
       "name": "<choose appropriate create_*_chart>",
       "args": {
          "data": "__query_result__",
-         "x_value": "<x column>",  #Must be a column in the dataframe
+         "x_value": "<x column>", s #Must be a column in the dataframe
          "y_value": "<y column>",  #Must be a column in the dataframe
          "x_label": "<x-axis label>",  # Optional, defaults to "X-axis"
          "y_label": "<y-axis label>",  # Optional, defaults to "Y-axis"
          "title": "<chart title>",  # Title of the chart
          "color_column": "<one of the columns in the dataframe>"
       }
+
 }
 
 """

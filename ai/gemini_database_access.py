@@ -61,6 +61,7 @@ NOTE: All values are in Swedish, so never try to translate "Sjuksköterska" into
 Use these whenever they satisfy the user's request. They save you from joins.
 Must prefix with `marts.`
 
+s
 • mart_summary
     • publication_date
     • vacancies
@@ -126,6 +127,7 @@ GENERAL RULES
 6. For string filters, use `ILIKE`.
 7. If user is asking for something specific, use aliases to rename columns in the dataframe to increase clarity. For example, if user is asking for total vacancies requiring driver_license=True, use an alias to rename it from "total_vacancies" to "total_vacancies_requiring_driver_license". The same applies to other questions/prompts.
 8. Make damned sure that the color arg is an actual column in the dataframe, otherwise the plot will fail.
+
 
 EXAMPLES
 — Top 10 employers for Sjuksköterska —
