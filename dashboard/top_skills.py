@@ -39,17 +39,6 @@ def top_skills_page():
         # Fetch the data from the database
         top_skill_data = fetch_data_from_db(top_skill_query)
 
-        col1, col2 = st.columns(2)
-        # Column 1 - Display the query
-        with col1:
-            with st.expander(label="SQL Query"):
-                st.code(top_skill_query, language="sql", wrap_lines=True)
-
-        # Column 2 - Display the fetched data
-        with col2:
-            with st.expander(label="Data Preview"):
-                st.dataframe(top_skill_data)
-
         # Check if the data is not empty
         if not top_skill_data.empty:
             # Check that it has at least 10 lines
@@ -79,6 +68,17 @@ def top_skills_page():
                             names="Skill",
                         )
                         st.plotly_chart(pie_chart, use_container_width=True)
+
+                    col2, col3 = st.columns(2)
+                    # Column 1 - Display the query
+                    with col2:
+                        with st.expander(label="SQL Query"):
+                            st.code(top_skill_query, language="sql", wrap_lines=True)
+
+                    # Column 2 - Display the fetched data
+                    with col3:
+                        with st.expander(label="Data Preview"):
+                            st.dataframe(top_skill_data)
 
             else:
                 st.markdown("There are too few job ads in this group/region. Please select a different occupation group or region.")
