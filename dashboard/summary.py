@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from .utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading
+from .utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading, wrap_label
 from .plots import create_pie_chart
 
 def summary_page():
@@ -41,7 +41,20 @@ def display_kpis():
 # ---------- Pie chart ----------
 def display_pie():
     st.subheader("Occupational Distribution (2% or more)", divider=True)
-    display_occupational_distribution()
+    
+    # Get the data for the pie chart
+    data = get_occupational_distribution()
+
+    data["wrapped_occupation"] = data["occupation"].apply(wrap_label)
+
+    # Create and display the pie chart using Plotly
+    fig = create_pie_chart(
+        data,
+        values="total_vacancies",
+        names="wrapped_occupation",
+        title=" ",
+        )
+    st.plotly_chart(fig, use_container_width=True)
 
 # ---------- Dataframe section ----------
 def display_dataframes():
@@ -171,7 +184,7 @@ def get_driver_license_percentage() -> float:
 ################################################
 
 # Function for getting all occupations for the pie chart
-def display_occupational_distribution():
+def get_occupational_distribution():
     # Build variables based on the sidebar filters
     occupation_field_string, occupation_group_string, _, start_day, end_day, requires_experience, region_string = get_sidebar_filters()
 
@@ -201,13 +214,8 @@ def display_occupational_distribution():
     if not data.empty:
         data["share"] = data["total_vacancies"] / data["total_vacancies"].sum()
         filtered_data = data[data["share"] >= 0.02]
-        fig = create_pie_chart(
-            filtered_data,
-            values="total_vacancies",
-            names="occupation",
-            title=" ",
-            )
-        st.plotly_chart(fig, use_container_width=True)
+
+        return filtered_data
 
 
 ################################################

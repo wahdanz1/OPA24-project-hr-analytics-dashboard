@@ -66,7 +66,7 @@ container_styling="""
         /* Styling for all containers inside the main section */
         div.stMainBlockContainer div[data-testid="stVerticalBlock"] {
             background: rgb(38, 39, 48);
-            padding: 2rem !important;
+            padding: 0.5rem 2rem 2rem !important;
             border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.1);
         }
