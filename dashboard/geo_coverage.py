@@ -5,14 +5,10 @@ from .plots import create_vertical_bar_chart, create_marimekko_chart
 def geographical_coverage_page():
     st.header("🌍 Geographical Coverage", divider=True)
     st.markdown("This page provides insights into the coverage of job ads across different municipalities.")
-    # top_occupations_per_municipality()
-    # st.divider()
     top_occupation_groups_marimekko()
 
 # Function for creating and displaying marimekko chart on page
 def top_occupation_groups_marimekko(top_n: int = 10):
-    st.markdown("This Marimekko chart shows the top occupation groups per municipality based on total vacancies.")
-
     # Sidebar filters
     occupation_field_choice = st.session_state.get("occupation_field_choice", "All occupation fields")
     _, occupation_group_string, _, start_day, end_day, _, region_string = get_sidebar_filters()

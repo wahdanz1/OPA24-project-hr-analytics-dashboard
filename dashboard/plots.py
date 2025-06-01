@@ -220,7 +220,7 @@ def create_marimekko_chart(data, municipality_labels):
 
     fig.update_layout(
         barmode='stack',
-        title='Top Occupation Groups per Municipality (Marimekko-style)',
+        title='Top Occupation Groups per Municipality',
         xaxis=dict(
             title='Municipality (Width = Total Vacancies)',
             tickmode='array',
