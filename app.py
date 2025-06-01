@@ -16,6 +16,7 @@ with st.sidebar:
             "Occupation Trends",
             "Geographical Coverage",
             "Top Occupations & Employers",
+            "Top Skills & Experiences",
             "Interactive Assistant"
         ),
         key="page_selection",
@@ -127,7 +128,14 @@ elif page_selection == "Top Occupations & Employers":
     te.top_employers_page()
 
 # --------------------------------------------------------
-# Page 5: Interactive Assistant
+# Page 5: Top Skills
+elif page_selection == "Top Skills & Experiences":
+    # set_background(page_selection)
+    import dashboard.top_skills as ts
+    ts.top_skills_page()
+
+# --------------------------------------------------------
+# Page 6: Interactive Assistant
 elif page_selection == "Interactive Assistant":
     from ai.chat import open_chat
     open_chat()

@@ -156,10 +156,12 @@ def display_dynamic_heading():
     }
 
     PAGE_EMOJIS = {
-        "Occupation Trends Over Time": "📈",
+        "Summary": "🗃️",
+        "Occupation Trends": "📈",
         "Geographical Coverage": "🌍",
         "Top Occupations & Employers": "🏆",
-        "Summary": "🗃️",
+        "Top Skills & Experiences": "🛠️",
+        "Interactive Assistant": "🤖",
     }
 
     # Get selections
@@ -181,13 +183,13 @@ def display_dynamic_heading():
         # Case B: Field selected, all groups
         field = field_list[0]
         field_emoji = FIELD_EMOJIS.get(field, "")
-        st.header(f"{page_emoji}{field_emoji} {page_title} for {field}", divider=True)
+        st.header(f"{field_emoji} {page_title} for {field}", divider=True)
 
     elif not all_fields and not all_groups:
         # Case C: Field and group(s) selected
         field = field_list[0]
         field_emoji = FIELD_EMOJIS.get(field, "")
-        st.header(f"{page_emoji}{field_emoji} {page_title} for {field}", divider=True)
+        st.header(f"{field_emoji} {page_title} for {field}", divider=True)
 
         shown_groups = group_list[:3]
         extra_count = len(group_list) - len(shown_groups)
@@ -206,6 +208,23 @@ def display_dynamic_heading():
         if extra_count > 0:
             shown_text += f" +{extra_count}"
         st.markdown(f"**Group(s):** {shown_text}")
+
+def wrap_label(label, max_len=25):
+    if len(label) <= max_len:
+        return label
+    # Split into words and insert <br> where needed
+    words = label.split()
+    lines = []
+    current_line = ""
+    for word in words:
+        if len(current_line + " " + word) <= max_len:
+            current_line += " " + word if current_line else word
+        else:
+            lines.append(current_line)
+            current_line = word
+    if current_line:
+        lines.append(current_line)
+    return "<br>".join(lines)
 
 # Function for setting the background on the different pages
 def set_background(current_page):

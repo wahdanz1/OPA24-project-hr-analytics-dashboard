@@ -1,12 +1,12 @@
 import streamlit as st
-from .utils import fetch_data_from_db, get_sidebar_filters
+from .utils import fetch_data_from_db, get_sidebar_filters, display_dynamic_heading, wrap_label
 from .plots import create_horizontal_bar_chart, create_line_chart
 
 def occupation_trends_page():
-    st.header("📈 Occupation Trends Over Time", divider=True)
+    display_dynamic_heading()
     
     # Description
-    st.markdown("This graph shows the trends in job openings over time.")
+    st.markdown("This graph shows the trends in job openings over time, based on the interval set in the sidebar.")
 
     bar_plot()
     st.divider()
